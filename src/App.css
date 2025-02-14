@@ -1,11 +1,11 @@
 .app-container {
-  background-color: #313638;
+  width: 100%;
   min-height: 100vh;
-  min-width: 100vw;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 2rem;
+  box-sizing: border-box;
+  padding: 0 2rem;
 }
 
 .title {
@@ -13,30 +13,7 @@
   color: #f9f9ed;
   font-size: 3rem;
   font-weight: 400;
-  margin: 0;
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+  margin: 2rem 0;
 }
 
 .content-frame {

@@ -15,6 +15,8 @@ that is where my sleet broswer demo project comes in as a way to browse and veiw
 now anyone can have sleetbrowser.testnet.page/subaccount.yourname.near
 using react router, this can be built into any react app to enable users to have pages on your domain
 
+**what other uses?**
+this is also a demo project to show how web4 pages can be connected and previewed in a single app or interface.
 
 ----
 

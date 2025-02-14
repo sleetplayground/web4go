@@ -49,7 +49,6 @@ const Web4Content = ({ onContentUrlFound }: Web4ContentProps) => {
         const contentResponse = await fetch(gatewayUrl);
         if (!response.ok) throw new Error('Failed to fetch content');
         
-        // Instead of fetching the content, we'll use the gateway URL directly
         setContentUrl(gatewayUrl);
         onContentUrlFound?.(gatewayUrl);
       } catch (err) {
@@ -65,15 +64,18 @@ const Web4Content = ({ onContentUrlFound }: Web4ContentProps) => {
     return <div className="error-message">{error}</div>;
   }
 
-  useEffect(() => {
-    if (contentUrl) {
-      window.location.href = contentUrl;
-    }
-  }, [contentUrl]);
-
   return (
-    <div className="loading-container">
-      {!error && !contentUrl && <div>Loading content...</div>}
+    <div className="web4-content-container">
+      {!error && !contentUrl && <div className="loading-container">Loading content...</div>}
+      {contentUrl && (
+        <iframe
+          src={contentUrl}
+          className="web4-iframe"
+          title="Web4 Content"
+          sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+          allow="fullscreen"
+        />
+      )}
     </div>
   );
 };

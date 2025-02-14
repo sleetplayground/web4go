@@ -65,7 +65,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onContentUrlFound, onSearch }) =>
         type="text"
         value={searchValue}
         onChange={(e) => setSearchValue(e.target.value)}
-        placeholder="Enter NEAR account or IPFS hash..."
+        placeholder="Enter NEAR account..."
         className="search-input"
       />
       <button type="submit" className="search-button" disabled={isLoading}>

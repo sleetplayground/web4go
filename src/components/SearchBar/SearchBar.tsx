@@ -25,17 +25,30 @@ const SearchBar: React.FC<SearchBarProps> = ({ onContentUrlFound }) => {
         : 'https://ipfs.web4.near.page';
 
       const response = await fetch(`${baseUrl}/${searchValue}/view/web4_get`);
+      const result = await response.json();
+
+      if (response.status === 404) {
+        setError('Account not found');
+        return;
+      }
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const result = await response.json();
 
-      if (result && result.result && result.result.bodyUrl) {
-        const ipfsUrl = result.result.bodyUrl.replace('ipfs://', '');
+      // Check if the response indicates no web4 content
+      if (result.error && result.error.includes('MethodResolveError')) {
+        setError('No web4 content found for this account');
+        return;
+      }
+
+      // Check for valid web4 content
+      if (result.bodyUrl) {
+        const ipfsUrl = result.bodyUrl.replace('ipfs://', '');
         const gatewayUrl = `${ipfsGateway}/ipfs/${ipfsUrl}`;
         onContentUrlFound(gatewayUrl);
       } else {
-        setError('No web4 content found for this account');
+        setError('Invalid web4 content format');
       }
     } catch (err) {
       setError('Error fetching web4 content: ' + (err as Error).message);

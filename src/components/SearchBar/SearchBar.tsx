@@ -3,9 +3,10 @@ import './SearchBar.css';
 
 interface SearchBarProps {
   onContentUrlFound: (url: string) => void;
+  onSearch: (accountId: string) => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onContentUrlFound }) => {
+const SearchBar: React.FC<SearchBarProps> = ({ onContentUrlFound, onSearch }) => {
   const [searchValue, setSearchValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -47,6 +48,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onContentUrlFound }) => {
         const ipfsUrl = result.bodyUrl.replace('ipfs://', '');
         const gatewayUrl = `${ipfsGateway}/ipfs/${ipfsUrl}`;
         onContentUrlFound(gatewayUrl);
+        onSearch(searchValue);
       } else {
         setError('Invalid web4 content format');
       }

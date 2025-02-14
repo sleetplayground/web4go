@@ -20,9 +20,9 @@ this is also a demo project to show how web4 pages can be connected and previewe
 
 ----
 
-NEAR IPFS Public gateways: [NEAR FS](https://github.com/vgrichina/nearfs)
-- https://ipfs.web4.near.page. Access data stored on NEAR mainnet.
-- https://ipfs.web4.testnet.page. Access data stored on NEAR testnet.
+NEAR IPFS Public gateways :: [NEAR FS](https://github.com/vgrichina/nearfs) :: /ipfs/:cid or youraccount.near.page
+- https://ipfs.web4.near.page/ipfs/cid_here. Access data stored on NEAR mainnet.
+- https://ipfs.web4.testnet.page/ipfs/cid_here. Access data stored on NEAR testnet.
 - https://near.page Web4 gateway which uses NEARFS to resolve ipfs:// links when possible.
 
 

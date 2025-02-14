@@ -28,6 +28,11 @@ NEAR IPFS Public gateways :: [NEAR FS](https://github.com/vgrichina/nearfs) :: /
 - https://near.page Web4 gateway which uses NEARFS to resolve ipfs:// links when possible.
 
 
+Public RPC endpoints
+- Testnet: https://rpc.web4.testnet.page/account/testnet
+- Mainnet: https://rpc.web4.near.page/account/near
+
+
 web 4 min contract
 <br/>
 https://github.com/vgrichina/web4-min-contract

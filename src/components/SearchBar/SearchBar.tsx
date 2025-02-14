@@ -19,7 +19,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onContentUrlFound }) => {
     try {
       const nearConnection = await nearAPI.connect({
         networkId: 'testnet',
-        nodeUrl: 'https://rpc.testnet.near.org',
+        nodeUrl: 'https://rpc.fastnear.com/testnet',
         deps: { keyStore: new nearAPI.keyStores.BrowserLocalStorageKeyStore() }
       });
 

@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 2rem;
 }
 
 .title {
@@ -11,12 +12,21 @@
   color: #f9f9ed;
   font-size: 3rem;
   font-weight: 400;
-  margin: 1rem 0;
+  margin-bottom: 2rem;
 }
 
-.content-frame {
-  width: 100%;
-  height: calc(100vh - 150px);
+.home-message {
+  color: #f9f9ed;
+  margin-top: 2rem;
+  font-size: 1.2rem;
+}
+
+.web4-content-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
 }
 
@@ -25,4 +35,13 @@
   height: 100%;
   border: none;
   background-color: #f9f9ed;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: #f9f9ed;
+  font-size: 1.2rem;
 }

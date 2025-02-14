@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import './SearchBar.css';
-import * as nearAPI from 'near-api-js';
 
 interface SearchBarProps {
   onContentUrlFound: (url: string) => void;
@@ -17,18 +16,23 @@ const SearchBar: React.FC<SearchBarProps> = ({ onContentUrlFound }) => {
     setError('');
 
     try {
-      const nearConnection = await nearAPI.connect({
-        networkId: 'testnet',
-        nodeUrl: 'https://rpc.fastnear.com/testnet',
-        deps: { keyStore: new nearAPI.keyStores.BrowserLocalStorageKeyStore() }
-      });
+      const isTestnet = searchValue.endsWith('.testnet');
+      const baseUrl = isTestnet
+        ? 'https://rpc.web4.testnet.page/account'
+        : 'https://rpc.web4.near.page/account';
+      const ipfsGateway = isTestnet
+        ? 'https://ipfs.web4.testnet.page'
+        : 'https://ipfs.web4.near.page';
 
-      const account = await nearConnection.account(searchValue);
-      const result = await account.viewFunction(searchValue, 'web4_get', {});
+      const response = await fetch(`${baseUrl}/${searchValue}/view/web4_get`);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const result = await response.json();
 
-      if (result && result.bodyUrl) {
-        const ipfsUrl = result.bodyUrl.replace('ipfs://', '');
-        const gatewayUrl = `https://ipfs.web4.testnet.page/ipfs/${ipfsUrl}`;
+      if (result && result.result && result.result.bodyUrl) {
+        const ipfsUrl = result.result.bodyUrl.replace('ipfs://', '');
+        const gatewayUrl = `${ipfsGateway}/ipfs/${ipfsUrl}`;
         onContentUrlFound(gatewayUrl);
       } else {
         setError('No web4 content found for this account');
@@ -49,9 +53,10 @@ const SearchBar: React.FC<SearchBarProps> = ({ onContentUrlFound }) => {
         placeholder="Enter NEAR account or IPFS hash..."
         className="search-input"
       />
-      <button type="submit" className="search-button">
-        Search
+      <button type="submit" className="search-button" disabled={isLoading}>
+        {isLoading ? 'Searching...' : 'Search'}
       </button>
+      {error && <div className="error-message">{error}</div>}
     </form>
   );
 };

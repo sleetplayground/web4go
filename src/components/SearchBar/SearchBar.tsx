@@ -17,6 +17,16 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 
     try {
       const isTestnet = searchValue.endsWith('.testnet');
+      const isMasterAccount = searchValue.split('.').length === 2; // e.g., "name.near" or "name.testnet"
+      
+      if (isMasterAccount) {
+        // Redirect to the .page domain for master accounts
+        const pageDomain = isTestnet ? 'testnet.page' : 'near.page';
+        window.location.href = `https://${searchValue.split('.')[0]}.${pageDomain}`;
+        return;
+      }
+
+      // Continue with IPFS gateway for subaccounts
       const baseUrl = isTestnet
         ? 'https://rpc.web4.testnet.page/account'
         : 'https://rpc.web4.near.page/account';

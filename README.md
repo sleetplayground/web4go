@@ -18,6 +18,8 @@ using react router, this can be built into any react app to enable users to have
 **what other uses?**
 this is also a demo project to show how web4 pages can be connected and previewed in a single app or interface.
 
+this app uses react routing and near api js.
+
 ----
 
 NEAR IPFS Public gateways :: [NEAR FS](https://github.com/vgrichina/nearfs) :: /ipfs/:cid or youraccount.near.page

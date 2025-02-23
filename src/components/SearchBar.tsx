@@ -66,19 +66,23 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
   };
 
   return (
-    <form className="search-bar" onSubmit={handleSearch}>
-      <input
-        type="text"
-        value={searchValue}
-        onChange={(e) => setSearchValue(e.target.value)}
-        placeholder="Enter NEAR account..."
-        className="search-input"
-      />
-      <button type="submit" className="search-button" disabled={isLoading}>
-        {isLoading ? 'Searching...' : 'Search'}
-      </button>
-      {error && <div className="error-message">{error}</div>}
-    </form>
+    <section className="discover-section">
+      <h1 className="title">Sleet Browser</h1>
+      <form className="search-bar" onSubmit={handleSearch}>
+        <input
+          type="text"
+          value={searchValue}
+          onChange={(e) => setSearchValue(e.target.value)}
+          placeholder="Enter NEAR account..."
+          className="search-input"
+        />
+        <button type="submit" className="search-button" disabled={isLoading}>
+          {isLoading ? 'Searching...' : 'Search'}
+        </button>
+        {error && <div className="error-message">{error}</div>}
+      </form>
+      <div className="home-message">Enter a NEAR account to view content</div>
+    </section>
   );
 };
 

@@ -1,6 +1,8 @@
 import './css/App.css'
 import SearchBar from './components/SearchBar'
 import Web4Content from './pages/Web4Content'
+import DiscoverApps from './components/DiscoverApps'
+import DiscoverPeople from './components/DiscoverPeople'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 
 function HomePage() {
@@ -12,9 +14,9 @@ function HomePage() {
 
   return (
     <div className="app-container">
-      <h1 className="title">Sleet Browser</h1>
       <SearchBar onSearch={handleSearch} />
-      <div className="home-message">Enter a NEAR account to view content</div>
+      <DiscoverApps />
+      <DiscoverPeople />
     </div>
   )
 }

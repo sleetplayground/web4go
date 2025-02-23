@@ -77,7 +77,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
           className="search-input"
         />
         <button type="submit" className="search-button" disabled={isLoading}>
-          {isLoading ? 'Searching...' : 'Search'}
+          {isLoading ? 'Searching...' : 'GO'}
         </button>
         {error && <div className="error-message">{error}</div>}
       </form>

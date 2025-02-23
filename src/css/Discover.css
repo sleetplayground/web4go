@@ -5,8 +5,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
   font-family: 'Ubuntu', sans-serif;
+  scroll-snap-align: start;
 }
 
 .discover-section h2 {

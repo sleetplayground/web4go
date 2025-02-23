@@ -1,4 +1,4 @@
-# Sleet Browser
+# WEB4GO
 
 this is a demo project to Browse content on web4
 

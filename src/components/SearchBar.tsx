@@ -67,7 +67,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 
   return (
     <section className="discover-section">
-      <h1 className="title">Sleet Browser</h1>
+      <h1 className="title">web4 /go</h1>
       <form className="search-bar" onSubmit={handleSearch}>
         <input
           type="text"
@@ -81,7 +81,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
         </button>
         {error && <div className="error-message">{error}</div>}
       </form>
-      <div className="home-message">Enter a NEAR account to view content</div>
+      <div className="home-message">your gateway to web4</div>
     </section>
   );
 };

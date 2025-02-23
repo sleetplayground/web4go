@@ -1,12 +1,15 @@
 .discover-section {
   width: 100%;
   height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-family: 'Ubuntu', sans-serif;
   scroll-snap-align: start;
+  scroll-snap-stop: always;
+  flex-shrink: 0;
 }
 
 .discover-section h2 {

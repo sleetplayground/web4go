@@ -1,6 +1,6 @@
-import './App.css'
-import SearchBar from './components/SearchBar/SearchBar'
-import Web4Content from './components/Web4Content/Web4Content'
+import './css/App.css'
+import SearchBar from './components/SearchBar'
+import Web4Content from './pages/Web4Content'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 
 function HomePage() {

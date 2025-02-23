@@ -15,34 +15,6 @@ design for linkhub
 White BG.
 
 
----
-
-color pairs
-
-colors icon
-```palette
-#1ca538
-#65320b
-```
-
-
-Soft Pastels
-```palette
-#FFB6C1
-#87CEFA
-```
-
-Bold and Energetic
-```palette
-#FF4500
-#FFD700
-```
-
-
-
----
-
-
 font Ubuntu from google fonts
 
 ```css

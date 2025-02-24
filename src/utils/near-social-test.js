@@ -14,13 +14,25 @@ const args = process.argv.slice(2);
 const blockHeight = parseInt(args[0]) || null;
 const direction = args[1] || 'forward';
 
+// Format profile data for display
+function formatProfile(accountId, data) {
+  const profile = data.profile || {};
+  return {
+    accountId,
+    name: profile.name || accountId,
+    description: profile.description ? profile.description.slice(0, 50) + '...' : '',
+    links: profile.linktree || {},
+    blockHeight: data._block_height
+  };
+}
+
 // Test function to fetch multiple profiles with pagination
 async function testFetchProfiles(blockHeight, direction) {
   try {
     const response = await nearSocialApi.get({
       keys: ['*/profile/**'],
       options: {
-        limit: 24,
+        limit: 2, // Limit to 2 profiles
         blockHeight: blockHeight,
         order: direction === 'backward' ? 'asc' : 'desc',
         subscribe: false,
@@ -29,31 +41,40 @@ async function testFetchProfiles(blockHeight, direction) {
       }
     });
 
-    // Get the account IDs and their block heights from the response
-    const accountIds = Object.keys(response || {});
-    const profileData = Object.entries(response || {}).map(([accountId, data]) => ({
-      accountId,
-      blockHeight: data._block_height
-    }));
-    
+    // Format and display profiles
+    const profiles = Object.entries(response || {}).map(([accountId, data]) => 
+      formatProfile(accountId, data)
+    );
+
     // Find the next block height for pagination
-    const nextBlockHeight = profileData.length > 0 ?
+    const nextBlockHeight = profiles.length > 0 ?
       (direction === 'backward' ?
-        Math.min(...profileData.map(p => p.blockHeight)) :
-        Math.max(...profileData.map(p => p.blockHeight))) :
+        Math.min(...profiles.map(p => p.blockHeight)) :
+        Math.max(...profiles.map(p => p.blockHeight))) :
       blockHeight;
 
-    console.log('Current Block Height:', blockHeight || 'Latest');
-    console.log('Direction:', direction);
-    console.log('Next Block Height:', nextBlockHeight);
-    console.log('Number of profiles fetched:', accountIds.length);
-    console.log('Account IDs:', accountIds);
-    console.log('\nProfile details:', JSON.stringify(response, null, 2));
+    console.log('\n=== NEAR Social Profiles ===');
+    console.log(`Direction: ${direction} | Block Height: ${blockHeight || 'Latest'}\n`);
+
+    profiles.forEach(profile => {
+      console.log(`Account: ${profile.accountId}`);
+      console.log(`Name: ${profile.name}`);
+      if (profile.description) console.log(`Description: ${profile.description}`);
+      if (Object.keys(profile.links).length > 0) {
+        console.log('Links:');
+        Object.entries(profile.links).forEach(([platform, link]) => {
+          console.log(`  - ${platform}: ${link}`);
+        });
+      }
+      console.log('---');
+    });
 
     // Provide hint for next query
-    if (accountIds.length > 0) {
-      console.log('\nTo fetch next batch, run:');
-      console.log(`node near-social-test.js ${nextBlockHeight} ${direction}`);
+    if (profiles.length > 0) {
+      console.log('\nTo fetch next profiles, run:');
+      console.log(`node near-social-test.js ${nextBlockHeight} ${direction}\n`);
+    } else {
+      console.log('\nNo more profiles to fetch.\n');
     }
   } catch (error) {
     console.error('Error fetching profiles:', error);

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { NearSocialApi } from '@builddao/near-social-js';
+import { Social } from '@builddao/near-social-js';
 import '../css/Discover.css';
 
 interface Profile {
@@ -11,8 +11,15 @@ interface Profile {
   };
 }
 
-const nearSocialApi = new NearSocialApi({
-  networkId: 'mainnet',
+interface ProfileData {
+  name?: string;
+  image?: {
+    url?: string;
+  };
+}
+
+const nearSocialApi = new Social({
+  network: 'mainnet',
   nodeUrl: 'https://rpc.mainnet.near.org',
   contractName: 'social.near'
 });
@@ -25,7 +32,6 @@ const DiscoverPeople: React.FC = () => {
   useEffect(() => {
     const fetchProfiles = async () => {
       try {
-        // Fetch some initial NEAR accounts to display
         const initialAccounts = [
           'petarvujovic.near',
           'mob.near',
@@ -35,12 +41,15 @@ const DiscoverPeople: React.FC = () => {
           'mintbase.near'
         ];
 
-        const fetchedProfiles = await nearSocialApi.getProfiles(initialAccounts);
-        const formattedProfiles = Object.entries(fetchedProfiles).map(([accountId, data]) => ({
+        const fetchedProfiles = await nearSocialApi.get({
+          keys: initialAccounts.map(account => `${account}/profile/*`)
+        });
+        
+        const formattedProfiles = Object.entries(fetchedProfiles || {}).map(([accountId, data]: [string, any]) => ({
           accountId,
-          name: data?.name || accountId,
+          name: data?.profile?.name || accountId,
           image: {
-            url: data?.image?.url || 'https://via.placeholder.com/150'
+            url: data?.profile?.image?.url || 'https://via.placeholder.com/150'
           }
         }));
 
@@ -72,7 +81,7 @@ const DiscoverPeople: React.FC = () => {
     <section className="discover-section discover-people">
       <h2>discover people</h2>
       <div className="apps-grid">
-        {profiles.map((profile, index) => (
+        {profiles.map((profile) => (
           <div
             key={profile.accountId}
             className="app-card"

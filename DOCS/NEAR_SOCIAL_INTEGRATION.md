@@ -9,6 +9,81 @@ This document outlines the integration process for accessing NEAR Social data to
 pnpm install near-api-js
 ```
 
+2. Install near-social-js
+```bash
+pnpm install @builddao/near-social-js
+```
+
+## Using near-social-js
+
+### Basic Setup
+```typescript
+import { NearSocialApi } from '@builddao/near-social-js';
+
+// Initialize NearSocialApi
+const nearSocialApi = new NearSocialApi({
+  networkId: 'mainnet',
+  nodeUrl: 'https://rpc.mainnet.near.org',
+  contractName: 'social.near'
+});
+```
+
+### Fetching Profile Data
+```typescript
+// Get a single profile
+const getProfile = async (accountId: string) => {
+  try {
+    const profile = await nearSocialApi.getProfile(accountId);
+    return profile;
+  } catch (error) {
+    console.error(`Error fetching profile for ${accountId}:`, error);
+    throw error;
+  }
+};
+
+// Get multiple profiles
+const getProfiles = async (accountIds: string[]) => {
+  try {
+    const profiles = await nearSocialApi.getProfiles(accountIds);
+    return profiles;
+  } catch (error) {
+    console.error('Error fetching multiple profiles:', error);
+    throw error;
+  }
+};
+```
+
+### Working with Social Graph
+```typescript
+const getSocialConnections = async (accountId: string) => {
+  try {
+    // Get followers
+    const followers = await nearSocialApi.getFollowers(accountId);
+    
+    // Get following
+    const following = await nearSocialApi.getFollowing(accountId);
+    
+    return { followers, following };
+  } catch (error) {
+    console.error('Error fetching social connections:', error);
+    throw error;
+  }
+};
+```
+
+### Error Handling
+```typescript
+const handleNearSocialError = (error: any) => {
+  if (error.type === 'AccountNotFound') {
+    return 'Account not found on NEAR Social';
+  } else if (error.type === 'NetworkError') {
+    return 'Network error. Please check your connection';
+  } else {
+    return 'An unexpected error occurred';
+  }
+};
+```
+
 ## Data Structure
 NEAR Social data is stored on the NEAR blockchain. The key components we'll be working with are:
 

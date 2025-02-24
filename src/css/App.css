@@ -32,6 +32,35 @@
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.web4-content-wrapper {
+  text-align: center;
+  padding: 2rem;
+}
+
+.home-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  background-color: #8CA2F5;
+  color: #ffffff;
+  text-decoration: none;
+  transition: all 0.25s;
+}
+
+.home-link:hover {
+  background-color: #95D58D;
+  color: #ffffff;
+}
+
+.redirect-message {
+  color: #8CA2F5;
+  margin-top: 1rem;
 }
 
 .web4-iframe {

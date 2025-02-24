@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 interface Web4ContentProps {
   onContentUrlFound?: (url: string) => void;
@@ -69,13 +69,16 @@ const Web4Content = ({ onContentUrlFound }: Web4ContentProps) => {
 
   return (
     <div className="web4-content-container">
-      {!error && !contentUrl && <div className="loading-container">Loading content...</div>}
-      {contentUrl && (
-        <div className="redirect-message">
-          Content has been opened in a new tab. If it didn't open, 
-          <a href={contentUrl} target="_blank" rel="noopener noreferrer">click here</a>
-        </div>
-      )}
+      <div className="web4-content-wrapper">
+        <Link to="/" className="home-link">Back to Home</Link>
+        {!error && !contentUrl && <div className="loading-container">Loading content...</div>}
+        {contentUrl && (
+          <div className="redirect-message">
+            Content has been opened in a new tab.<br/>If it didn't open, 
+            <a href={contentUrl} target="_blank" rel="noopener noreferrer">click here</a>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

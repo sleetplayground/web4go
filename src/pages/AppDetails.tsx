@@ -50,12 +50,12 @@ const AppDetails: React.FC = () => {
             </a>
           )}
           {app.discord && (
-            <a href={app.discord} target="_blank" rel="noopener noreferrer">
+            <a href={`https://discord.gg/${app.discord}`} target="_blank" rel="noopener noreferrer">
               Discord
             </a>
           )}
           {app.telegram && (
-            <a href={app.telegram} target="_blank" rel="noopener noreferrer">
+            <a href={`https://t.me/${app.telegram}`} target="_blank" rel="noopener noreferrer">
               Telegram
             </a>
           )}

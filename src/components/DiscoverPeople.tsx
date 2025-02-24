@@ -9,7 +9,12 @@ interface Profile {
   image?: {
     url?: string;
   };
-  tags?: string[];
+  linktree?: {
+    telegram?: string;
+    github?: string;
+    twitter?: string;
+    website?: string;
+  };
 }
 
 const nearSocialApi = new Social({
@@ -21,139 +26,129 @@ const nearSocialApi = new Social({
 
 const DiscoverPeople: React.FC = () => {
   const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [searchResults, setSearchResults] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
-  const [page, setPage] = useState(0);
-  const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
-  const observer = useRef<IntersectionObserver>();
-  const loadingRef = useRef<HTMLDivElement>(null);
 
-  const BATCH_SIZE = 12;
-
-  const loadMoreProfiles = useCallback(async () => {
-    if (loading) return;
-
+  const fetchProfiles = async () => {
     setLoading(true);
-    setError(null);
     try {
-      const start = page * BATCH_SIZE;
-
-      // Fetch profiles with proper error handling
-      let response;
-      try {
-        response = await nearSocialApi.get({
-          keys: [`*/profile/**`],
-          options: {
-            limit: BATCH_SIZE,
-            order: 'desc',
-            from: start,
-            subscribe: false
-          }
-        });
-      } catch (apiError) {
-        console.error('API Error:', apiError);
-        throw new Error('Failed to fetch profiles from NEAR Social API');
-      }
-
-      if (!response || typeof response !== 'object') {
-        setHasMore(false);
-        return;
-      }
-
-      // Transform response into profiles
-      const newProfiles = Object.entries(response)
-        .filter(([accountId, data]: [string, any]) => data?.profile)
-        .map(([accountId, data]: [string, any]) => ({
-          accountId,
-          name: data.profile.name || accountId,
-          image: {
-            url: data.profile.image?.url || 'https://via.placeholder.com/150'
-          },
-          tags: Array.isArray(data.profile.tags) ? data.profile.tags : []
-        }));
-
-      if (newProfiles.length === 0) {
-        setHasMore(false);
-        return;
-      }
-
-      setProfiles(prev => {
-        const uniqueProfiles = [...prev];
-        newProfiles.forEach(profile => {
-          const existingIndex = uniqueProfiles.findIndex(p => p.accountId === profile.accountId);
-          if (existingIndex === -1) {
-            uniqueProfiles.push(profile);
-          }
-        });
-        return uniqueProfiles;
+      const response = await nearSocialApi.get({
+        keys: ['*/profile/**'],
+        options: {
+          limit: 24,
+          order: 'desc',
+          subscribe: false
+        }
       });
-      setPage(prev => prev + 1);
+
+      if (response && typeof response === 'object') {
+        const fetchedProfiles = Object.entries(response)
+          .filter(([_, data]: [string, any]) => data?.profile)
+          .map(([accountId, data]: [string, any]) => ({
+            accountId,
+            name: data.profile.name || accountId,
+            image: {
+              url: data.profile.image?.url || 'https://via.placeholder.com/150'
+            },
+            linktree: data.profile.linktree || {}
+          }));
+        setProfiles(fetchedProfiles);
+      }
     } catch (error) {
       console.error('Error fetching profiles:', error);
-      setError(error instanceof Error ? error.message : 'Failed to load profiles');
-      setHasMore(false);
     } finally {
       setLoading(false);
     }
-  }, [page, loading]);
+  };
 
-  useEffect(() => {
-    const currentObserver = new IntersectionObserver(
-      entries => {
-        if (entries[0].isIntersecting && hasMore) {
-          loadMoreProfiles();
-        }
-      },
-      { threshold: 1.0 }
-    );
-
-    if (loadingRef.current) {
-      currentObserver.observe(loadingRef.current);
+  const handleSearch = async (query: string) => {
+    setSearchQuery(query);
+    if (!query.trim()) {
+      setSearchResults([]);
+      return;
     }
 
-    observer.current = currentObserver;
+    try {
+      const response = await nearSocialApi.get({
+        keys: ['*/profile/**'],
+        options: {
+          limit: 10,
+          subscribe: false
+        }
+      });
 
-    return () => {
-      if (observer.current) {
-        observer.current.disconnect();
+      if (response && typeof response === 'object') {
+        const results = Object.entries(response)
+          .filter(([accountId, data]: [string, any]) => {
+            const profile = data?.profile;
+            return profile && (
+              accountId.toLowerCase().includes(query.toLowerCase()) ||
+              profile.name?.toLowerCase().includes(query.toLowerCase())
+            );
+          })
+          .map(([accountId, data]: [string, any]) => ({
+            accountId,
+            name: data.profile.name || accountId,
+            image: {
+              url: data.profile.image?.url || 'https://via.placeholder.com/150'
+            },
+            linktree: data.profile.linktree || {}
+          }));
+        setSearchResults(results);
       }
-    };
-  }, [loadMoreProfiles, hasMore]);
+    } catch (error) {
+      console.error('Error searching profiles:', error);
+    }
+  };
 
   useEffect(() => {
-    loadMoreProfiles();
+    fetchProfiles();
   }, []);
 
   const handleProfileClick = (accountId: string) => {
     navigate(`/profile/${accountId}`);
   };
 
+  const displayProfiles = searchQuery ? searchResults : profiles;
+
   return (
     <section className="discover-section discover-people">
       <h2>discover people</h2>
-      <div className="apps-grid">
-        {profiles.map((profile, index) => (
-          <div
-            key={`${profile.accountId}-${index}`}
-            className="app-card"
-            onClick={() => handleProfileClick(profile.accountId)}
-          >
-            <img
-              src={profile.image?.url || 'https://via.placeholder.com/150'}
-              alt={profile.name || profile.accountId}
-              className="app-logo"
-            />
-            <p className="app-title">{profile.name || profile.accountId}</p>
-          </div>
-        ))}
+      <div className="search-container mb-4">
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Search profiles..."
+          value={searchQuery}
+          onChange={(e) => handleSearch(e.target.value)}
+        />
       </div>
-      {error && <div className="error-message">{error}</div>}
-      {hasMore && (
-        <div ref={loadingRef} className="loading-indicator">
-          {loading ? 'Loading more profiles...' : 'Scroll for more'}
-        </div>
-      )}
+      <div className="apps-grid">
+        {loading ? (
+          <div className="loading-indicator">Loading profiles...</div>
+        ) : displayProfiles.length > 0 ? (
+          displayProfiles.map((profile) => (
+            <div
+              key={profile.accountId}
+              className="app-card"
+              onClick={() => handleProfileClick(profile.accountId)}
+            >
+              <img
+                src={profile.image?.url}
+                alt={profile.name || profile.accountId}
+                className="app-logo"
+              />
+              <p className="app-title">{profile.name || profile.accountId}</p>
+            </div>
+          ))
+        ) : (
+          <div className="no-results">
+            {searchQuery ? 'No matching profiles found' : 'No profiles available'}
+          </div>
+        )}
+      </div>
     </section>
   );
 };

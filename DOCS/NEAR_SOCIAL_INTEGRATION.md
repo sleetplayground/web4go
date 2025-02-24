@@ -253,5 +253,5 @@ This documentation will be updated as we implement and refine the people discove
 
 
 ```sh
-node -e "const { Social } = require('@builddao/near-social-js'); const api = new Social({ network: 'mainnet' }); api.get({ keys: ['petarvujovic.near/profile/*'] }).then(data => console.log(JSON.stringify(data, null, 2)));"
+node -e "const { Social } = require('@builddao/near-social-js'); const api = new Social({ network: 'mainnet' }); api.get({ keys: ['petarvujovic.near/profile/**', 'petarvujovic.near/profile/linktree/**'] }).then(data => console.log(JSON.stringify(data, null, 2))).catch(console.error);"
 ```

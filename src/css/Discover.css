@@ -44,3 +44,62 @@
 .discover-people .discover-content {
   color: #313638;
 }
+
+.network-toggle {
+  margin-bottom: 2rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.network-toggle button {
+  padding: 0.5rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-family: 'Ubuntu', sans-serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.network-toggle button.active {
+  background-color: #ffffff;
+  color: #C9A8F4;
+}
+
+.apps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 2rem;
+  padding: 2rem;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.app-card {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  text-align: center;
+}
+
+.app-card:hover {
+  transform: translateY(-5px);
+}
+
+.app-logo {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 1rem;
+  color: #ffffff;
+  font-weight: 500;
+}

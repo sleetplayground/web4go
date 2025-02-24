@@ -49,7 +49,7 @@ async function fetchProfiles() {
 To run these examples, save them in a file (e.g., `near-social-test.js`) and execute with Node.js:
 
 ```bash
-node near-social-test.js
+node src/utils/near-social-test.js
 ```
 
 This implementation matches the successful pattern used in the Sleet Browser application's DiscoverPeople component.

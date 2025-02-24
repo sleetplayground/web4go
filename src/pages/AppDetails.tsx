@@ -26,54 +26,59 @@ const AppDetails: React.FC = () => {
   }
 
   return (
-    <div className="app-details-container">
-      <div className="app-details-content">
-        <img
-          src={app.logo_url || 'https://via.placeholder.com/300'}
-          alt={app.title}
-          className="app-details-logo"
-        />
-        <h1 className="app-details-title">{app.title}</h1>
-        <p className="app-details-oneliner">{app.oneliner}</p>
-        <div className="app-details-description">
-          {app.description}
-        </div>
-        <div className="app-details-links">
-          <a
-            href={`https://${dapp_account_id?.split('.')[0]}.${network === 'testnet' ? 'testnet.page' : 'near.page'}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Web4 Page
-          </a>
-          {app.github && (
-            <a href={`https://github.com/${app.github}`} target="_blank" rel="noopener noreferrer">
-              GitHub
+    <>
+      <div className="back-link-container">
+        <Link to="/" className="back-link">← Back to Home</Link>
+      </div>
+      <div className="app-details-container">
+        <div className="app-details-content">
+          <img
+            src={app.logo_url || 'https://via.placeholder.com/300'}
+            alt={app.title}
+            className="app-details-logo"
+          />
+          <h1 className="app-details-title">{app.title}</h1>
+          <p className="app-details-oneliner">{app.oneliner}</p>
+          <div className="app-details-description">
+            {app.description}
+          </div>
+          <div className="app-details-links">
+            <a
+              href={`https://${dapp_account_id?.split('.')[0]}.${network === 'testnet' ? 'testnet.page' : 'near.page'}`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Web4 Page
             </a>
-          )}
-          {app.twitter && (
-            <a href={`https://twitter.com/${app.twitter}`} target="_blank" rel="noopener noreferrer">
-              Twitter
-            </a>
-          )}
-          {app.discord && (
-            <a href={`https://discord.gg/${app.discord}`} target="_blank" rel="noopener noreferrer">
-              Discord
-            </a>
-          )}
-          {app.telegram && (
-            <a href={`https://t.me/${app.telegram}`} target="_blank" rel="noopener noreferrer">
-              Telegram
-            </a>
-          )}
-          {app.medium && (
-            <a href={`https://medium.com/${app.medium}`} target="_blank" rel="noopener noreferrer">
-              Medium
-            </a>
-          )}
+            {app.github && (
+              <a href={`https://github.com/${app.github}`} target="_blank" rel="noopener noreferrer">
+                GitHub
+              </a>
+            )}
+            {app.twitter && (
+              <a href={`https://twitter.com/${app.twitter}`} target="_blank" rel="noopener noreferrer">
+                Twitter
+              </a>
+            )}
+            {app.discord && (
+              <a href={`https://discord.gg/${app.discord}`} target="_blank" rel="noopener noreferrer">
+                Discord
+              </a>
+            )}
+            {app.telegram && (
+              <a href={`https://t.me/${app.telegram}`} target="_blank" rel="noopener noreferrer">
+                Telegram
+              </a>
+            )}
+            {app.medium && (
+              <a href={`https://medium.com/${app.medium}`} target="_blank" rel="noopener noreferrer">
+                Medium
+              </a>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

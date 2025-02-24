@@ -72,3 +72,21 @@
   font-size: 1.5rem;
   color: #8CA2F5;
 }
+
+.back-link-container {
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.back-link {
+  color: #0066cc;
+  text-decoration: none;
+  font-family: 'Ubuntu', sans-serif;
+  display: inline-flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+.back-link:hover {
+  color: #004999;
+}

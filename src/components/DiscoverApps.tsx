@@ -17,8 +17,9 @@ const DiscoverApps: React.FC = () => {
   useEffect(() => {
     const fetchApps = async () => {
       try {
-        const contractId = `awesomeweb4.${network}`;
-        const response = await fetch(`https://rpc.${network}.near.org`, {
+        const contractId = network === 'testnet' ? 'awesomeweb4.testnet' : 'awesomeweb4.near';
+        const rpcEndpoint = network === 'testnet' ? 'https://rpc.web4.testnet.page' : 'https://rpc.web4.near.page';
+        const response = await fetch(rpcEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

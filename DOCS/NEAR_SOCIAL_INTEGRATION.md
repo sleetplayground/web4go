@@ -1,19 +1,55 @@
 # NEAR Social Integration
 
+You can test NEAR Social data fetching using the near-social-js library. Here's how to properly initialize and use the API:
 
-You can test NEAR Social data fetching using the near-social-js library directly from Node.js:
+```javascript
+const { Social } = require('@builddao/near-social-js');
 
+// Initialize the API with proper configuration
+const nearSocialApi = new Social({
+  network: 'mainnet',
+  contractName: 'social.near',
+  nodeUrl: 'https://rpc.mainnet.near.org',
+  apiUrl: 'https://api.near.social/api/v1'
+});
 
-one person profile
-```sh
-node -e "const { Social } = require('@builddao/near-social-js'); const api = new Social({ network: 'mainnet' }); api.get({ keys: ['petarvujovic.near/profile/**', 'petarvujovic.near/profile/linktree/**'] }).then(data => console.log(JSON.stringify(data, null, 2))).catch(console.error)"
+// Fetch a single profile
+async function fetchProfile(accountId) {
+  try {
+    const response = await nearSocialApi.get({
+      keys: [`${accountId}/profile/**`],
+      options: {
+        subscribe: false
+      }
+    });
+    console.log(JSON.stringify(response, null, 2));
+  } catch (error) {
+    console.error('Error fetching profile:', error);
+  }
+}
+
+// Fetch multiple profiles
+async function fetchProfiles() {
+  try {
+    const response = await nearSocialApi.get({
+      keys: ['*/profile/**'],
+      options: {
+        limit: 24,
+        order: 'desc',
+        subscribe: false
+      }
+    });
+    console.log(JSON.stringify(response, null, 2));
+  } catch (error) {
+    console.error('Error fetching profiles:', error);
+  }
+}
 ```
 
-This command will fetch both the profile and linktree data for a NEAR account. You can modify the account ID and data paths as needed.
- 
+To run these examples, save them in a file (e.g., `near-social-test.js`) and execute with Node.js:
 
+```bash
+node near-social-test.js
+```
 
- muliple acounts
- ```sh
- node -e "const { Social } = require('@builddao/near-social-js'); const api = new Social({ network: 'mainnet' }); api.keys('*/profile/**').then(data => console.log(JSON.stringify(data, null, 2))).catch(console.error)"
- ```
+This implementation matches the successful pattern used in the Sleet Browser application's DiscoverPeople component.

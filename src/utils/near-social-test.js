@@ -23,14 +23,28 @@ async function testFetchProfiles(fromIndex, direction) {
         limit: 24,
         from: fromIndex,
         order: direction === 'backward' ? 'asc' : 'desc',
-        subscribe: false
+        subscribe: false,
+        return_deleted: false,
+        return_blocked: false
       }
     });
 
+    // Get the account IDs from the response
+    const accountIds = Object.keys(response || {});
+    
+    // Calculate the next cursor based on the last account ID
+    const nextCursor = accountIds.length > 0 ? 
+      (direction === 'backward' ? 
+        Math.max(0, fromIndex - 24) : 
+        fromIndex + accountIds.length) : 
+      fromIndex;
+
     console.log('Current Index:', fromIndex);
     console.log('Direction:', direction);
-    console.log('Next Index:', direction === 'backward' ? Math.max(0, fromIndex - 24) : fromIndex + 24);
-    console.log('Fetched profiles:', JSON.stringify(response, null, 2));
+    console.log('Next Index:', nextCursor);
+    console.log('Number of profiles fetched:', accountIds.length);
+    console.log('Account IDs:', accountIds);
+    console.log('\nProfile details:', JSON.stringify(response, null, 2));
   } catch (error) {
     console.error('Error fetching profiles:', error);
   }

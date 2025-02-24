@@ -17,19 +17,16 @@ interface App {
 }
 
 const AppDetails: React.FC = () => {
-  const { slug } = useParams();
+  const { dapp_account_id } = useParams();
   const [app, setApp] = useState<App | null>(null);
-  const [network, setNetwork] = useState<'testnet' | 'mainnet'>('mainnet');
-
-  const toggleNetwork = () => {
-    setNetwork(network === 'testnet' ? 'mainnet' : 'testnet');
-  };
+  const network = dapp_account_id?.endsWith('.testnet') ? 'testnet' : 'mainnet';
 
   useEffect(() => {
     const fetchAppDetails = async () => {
       try {
-        const contractId = `awesomeweb4.${network}`;
-        const response = await fetch(`https://rpc.${network}.near.org`, {
+        const contractId = network === 'testnet' ? 'awesomeweb4.testnet' : 'awesomeweb4.near';
+        const rpcEndpoint = network === 'testnet' ? 'https://rpc.web4.testnet.page' : 'https://rpc.web4.near.page';
+        const response = await fetch(rpcEndpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -40,8 +37,8 @@ const AppDetails: React.FC = () => {
               request_type: 'call_function',
               finality: 'final',
               account_id: contractId,
-              method_name: 'get_app_by_slug',
-              args_base64: btoa(JSON.stringify({ slug }))
+              method_name: 'get_app_by_account_id',
+              args_base64: btoa(JSON.stringify({ dapp_account_id }))
             }
           })
         });
@@ -53,10 +50,10 @@ const AppDetails: React.FC = () => {
       }
     };
 
-    if (slug) {
+    if (dapp_account_id) {
       fetchAppDetails();
     }
-  }, [slug, network]);
+  }, [dapp_account_id, network]);
 
   if (!app) {
     return <div className="loading">Loading...</div>;
@@ -65,20 +62,6 @@ const AppDetails: React.FC = () => {
   return (
     <div className="app-details-container">
       <div className="app-details-content">
-        <div className="network-toggle">
-          <button
-            className={network === 'testnet' ? 'active' : ''}
-            onClick={toggleNetwork}
-          >
-            Testnet
-          </button>
-          <button
-            className={network === 'mainnet' ? 'active' : ''}
-            onClick={toggleNetwork}
-          >
-            Mainnet
-          </button>
-        </div>
         <img
           src={app.logo_url || 'https://via.placeholder.com/300'}
           alt={app.title}

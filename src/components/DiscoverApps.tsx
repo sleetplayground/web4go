@@ -46,8 +46,8 @@ const DiscoverApps: React.FC = () => {
     fetchApps();
   }, [network]);
 
-  const handleAppClick = (slug: string) => {
-    navigate(`/apps/${slug}`);
+  const handleAppClick = (dapp_account_id: string) => {
+    navigate(`/apps/${dapp_account_id}`);
   };
 
   return (
@@ -72,7 +72,7 @@ const DiscoverApps: React.FC = () => {
           <div
             key={index}
             className="app-card"
-            onClick={() => handleAppClick(app.slug)}
+            onClick={() => handleAppClick(app.dapp_account_id)}
           >
             <img
               src={app.logo_url || 'https://via.placeholder.com/150'}

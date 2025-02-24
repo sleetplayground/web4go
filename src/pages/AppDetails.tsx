@@ -1,66 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useApps } from '../context/AppsContext';
 import '../css/AppDetails.css';
 
 interface App {
   logo_url: string;
   title: string;
-  slug: string;
-  dapp_account_id: string;
-  description: string;
   oneliner: string;
-  github: string;
-  twitter: string;
-  discord: string;
-  telegram: string;
-  medium: string;
+  description: string;
+  dapp_account_id: string;
+  github?: string;
+  twitter?: string;
+  discord?: string;
+  telegram?: string;
+  medium?: string;
 }
 
 const AppDetails: React.FC = () => {
   const { dapp_account_id } = useParams();
   const [app, setApp] = useState<App | null>(null);
+  const { mainnetApps, testnetApps } = useApps();
   const network = dapp_account_id?.endsWith('.testnet') ? 'testnet' : 'mainnet';
+  const apps = network === 'testnet' ? testnetApps : mainnetApps;
 
   useEffect(() => {
-    const fetchAppDetails = async () => {
-      try {
-        const contractId = network === 'testnet' ? 'awesomeweb4.testnet' : 'awesomeweb4.near';
-        const rpcEndpoint = network === 'testnet' ? 'https://rpc.web4.testnet.page' : 'https://rpc.web4.near.page';
-        const response = await fetch(rpcEndpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            jsonrpc: '2.0',
-            id: 'dontcare',
-            method: 'query',
-            params: {
-              request_type: 'call_function',
-              finality: 'final',
-              account_id: contractId,
-              method_name: 'get_apps',
-              args_base64: btoa(JSON.stringify({ from_index: 0, limit: 100 }))
-            }
-          })
-        });
-        const data = await response.json();
-        const result = JSON.parse(Buffer.from(data.result.result).toString());
-        const apps = result.map((app: [number, App]) => app[1]);
-        const foundApp = apps.find((app: App) => app.dapp_account_id === dapp_account_id);
-        
-        if (foundApp) {
-          setApp(foundApp);
-        } else {
-          console.error('App not found');
-        }
-      } catch (error) {
-        console.error('Error fetching app details:', error);
-      }
-    };
-
-    if (dapp_account_id) {
-      fetchAppDetails();
+    const foundApp = apps.find((app: App) => app.dapp_account_id === dapp_account_id);
+    if (foundApp) {
+      setApp(foundApp);
+    } else {
+      console.error('App not found');
     }
-  }, [dapp_account_id, network]);
+  }, [apps, dapp_account_id]);
 
   if (!app) {
     return <div className="loading">Loading...</div>;

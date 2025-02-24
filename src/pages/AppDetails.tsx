@@ -40,7 +40,7 @@ const AppDetails: React.FC = () => {
         </div>
         <div className="app-details-links">
           {app.github && (
-            <a href={app.github} target="_blank" rel="noopener noreferrer">
+            <a href={`https://github.com/${app.github}`} target="_blank" rel="noopener noreferrer">
               GitHub
             </a>
           )}
@@ -60,7 +60,7 @@ const AppDetails: React.FC = () => {
             </a>
           )}
           {app.medium && (
-            <a href={app.medium} target="_blank" rel="noopener noreferrer">
+            <a href={`https://medium.com/${app.medium}`} target="_blank" rel="noopener noreferrer">
               Medium
             </a>
           )}

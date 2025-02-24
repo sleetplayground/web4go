@@ -57,6 +57,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
         const ipfsUrl = result.bodyUrl.replace('ipfs://', '');
         const gatewayUrl = `${ipfsGateway}/ipfs/${ipfsUrl}`;
         onSearch(searchValue);
+        window.location.href = gatewayUrl;
       } else {
         setError('Invalid web4 content format');
       }

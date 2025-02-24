@@ -17,12 +17,14 @@ const nearSocialApi = new Social({
 
 const DiscoverPeople: React.FC = () => {
   const [profiles, setProfiles] = useState<Profile[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const observer = useRef<IntersectionObserver>();
   const loadingRef = useRef<HTMLDivElement>(null);
+  const profileCache = useRef<Record<string, Profile>>({});
 
   const BATCH_SIZE = 6;
   const allAccounts = [
@@ -47,6 +49,7 @@ const DiscoverPeople: React.FC = () => {
     if (loading) return;
 
     setLoading(true);
+    setError(null);
     try {
       const start = page * BATCH_SIZE;
       const end = start + BATCH_SIZE;
@@ -57,19 +60,42 @@ const DiscoverPeople: React.FC = () => {
         return;
       }
 
-      const fetchedProfiles = await nearSocialApi.get({
-        keys: currentBatch.map(account => `${account}/profile/*`)
-      });
-      
-      const formattedProfiles = Object.entries(fetchedProfiles || {}).map(([accountId, data]: [string, any]) => ({
-        accountId,
-        name: data?.profile?.name || accountId,
-        image: {
-          url: data?.profile?.image?.url || 'https://via.placeholder.com/150'
-        }
-      }));
+      // Filter out cached profiles
+      const uncachedAccounts = currentBatch.filter(
+        account => !profileCache.current[account]
+      );
 
-      setProfiles(prev => [...prev, ...formattedProfiles]);
+      if (uncachedAccounts.length > 0) {
+        const fetchedProfiles = await nearSocialApi.get({
+          keys: uncachedAccounts.map(account => `${account}/profile/*`)
+        });
+
+        const formattedProfiles = Object.entries(fetchedProfiles || {}).map(
+          ([accountId, data]: [string, any]) => ({
+            accountId,
+            name: data?.profile?.name || accountId,
+            image: {
+              url: data?.profile?.image?.url || 'https://via.placeholder.com/150'
+            }
+          })
+        );
+
+        // Update cache
+        formattedProfiles.forEach(profile => {
+          profileCache.current[profile.accountId] = profile;
+        });
+      }
+
+      // Combine cached and new profiles
+      const batchProfiles = currentBatch.map(
+        account => profileCache.current[account] || {
+          accountId: account,
+          name: account,
+          image: { url: 'https://via.placeholder.com/150' }
+        }
+      );
+
+      setProfiles(prev => [...prev, ...batchProfiles]);
       setPage(prev => prev + 1);
     } catch (error) {
       console.error('Error fetching profiles:', error);
@@ -128,9 +154,10 @@ const DiscoverPeople: React.FC = () => {
           </div>
         ))}
       </div>
+      {error && <div className="error-message">{error}</div>}
       {hasMore && (
         <div ref={loadingRef} className="loading-indicator">
-          {loading ? 'Loading more profiles...' : ''}
+          {loading ? 'Loading more profiles...' : 'Scroll for more'}
         </div>
       )}
     </section>

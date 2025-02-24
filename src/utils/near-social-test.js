@@ -9,17 +9,15 @@ const nearSocialApi = new Social({
   apiUrl: 'https://api.near.social/api/v1'
 });
 
-// Total number of profiles (approximately)
-const TOTAL_PROFILES = 21224;
-
 // Fetch profiles with pagination
-async function fetchProfiles(limit = 2, direction = 'backward', startingNumber = TOTAL_PROFILES) {
+async function fetchProfiles(limit = 2, direction = 'backward', fromAccountId = undefined) {
   try {
     const response = await nearSocialApi.get({
       keys: ['*/profile/**'],
       options: {
         limit: 100, // Fetch more to ensure we get valid profiles
-        order: direction === 'forward' ? 'asc' : 'desc',
+        from: fromAccountId,
+        order: 'desc', // Always fetch in descending order for consistency
         subscribe: false
       }
     });
@@ -31,19 +29,19 @@ async function fetchProfiles(limit = 2, direction = 'backward', startingNumber =
           accountId,
           name: data.profile.name || accountId,
           image: data.profile.image?.url || 'https://via.placeholder.com/150',
-          description: data.profile.description,
+          description: data.profile.description ? 
+            data.profile.description.length > 500 ? 
+              `${data.profile.description.substring(0, 500)}...` : 
+              data.profile.description : undefined,
           linktree: data.profile.linktree || {}
         }));
 
-      // Take only two profiles based on the direction
+      // Take profiles based on the direction and limit
       const selectedProfiles = profiles.slice(0, limit);
-      const currentNumber = direction === 'backward' ? startingNumber : startingNumber - limit + 1;
 
       console.log('=== Fetched Profiles ===');
-      selectedProfiles.forEach((profile, index) => {
-        const profileNumber = direction === 'backward' ? currentNumber - index : currentNumber + index;
-        console.log(`\nProfile #${profileNumber}:`);
-        console.log(`Account: ${profile.accountId}`);
+      selectedProfiles.forEach((profile) => {
+        console.log(`\nAccount: ${profile.accountId}`);
         console.log(`Name: ${profile.name}`);
         console.log(`Image URL: ${profile.image}`);
         if (profile.description) {
@@ -58,18 +56,16 @@ async function fetchProfiles(limit = 2, direction = 'backward', startingNumber =
         console.log('---');
       });
 
-      // Calculate next profile numbers for navigation
-      const nextBackward = currentNumber - limit;
-      const nextForward = currentNumber + limit;
-
+      // Navigation using cursor-based pagination
       console.log('\nNavigation:');
-      if (nextBackward >= 1) {
-        console.log(`To view older profiles (#${nextBackward}-${nextBackward + 1}):`);
-        console.log(`node src/utils/near-social-test.js 2 backward ${nextBackward}`);
+      if (selectedProfiles.length === limit) {
+        const lastProfile = selectedProfiles[selectedProfiles.length - 1];
+        console.log('To view older profiles:');
+        console.log(`node src/utils/near-social-test.js 2 backward ${lastProfile.accountId}`);
       }
-      if (nextForward <= TOTAL_PROFILES) {
-        console.log(`To view newer profiles (#${nextForward}-${nextForward + 1}):`);
-        console.log(`node src/utils/near-social-test.js 2 forward ${nextForward}`);
+      if (fromAccountId) {
+        console.log('To view newer profiles:');
+        console.log('node src/utils/near-social-test.js 2 forward');
       }
 
       return selectedProfiles;
@@ -83,7 +79,7 @@ async function fetchProfiles(limit = 2, direction = 'backward', startingNumber =
 const args = process.argv.slice(2);
 const limit = 2; // Fixed limit to 2
 const direction = args[1] || 'backward';
-const startingNumber = parseInt(args[2]) || TOTAL_PROFILES;
+const fromAccountId = args[2] || undefined;
 
 // Execute the script
-fetchProfiles(limit, direction, startingNumber);
+fetchProfiles(limit, direction, fromAccountId);

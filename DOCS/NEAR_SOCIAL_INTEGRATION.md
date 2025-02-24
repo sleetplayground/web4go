@@ -1,31 +1,73 @@
 # NEAR Social Integration Guide
 
 ## Overview
-This document outlines the integration process for accessing NEAR Social data to implement the people discovery feature in our application. We'll focus on how to retrieve user profiles and implement filtering capabilities using NEAR Social's data structure.
+This document outlines the integration process for accessing NEAR Social data to implement the people discovery feature in our application using near-api-js. We'll focus on how to retrieve user profiles and implement filtering capabilities by interacting with the NEAR blockchain.
+
+## Prerequisites
+1. Install near-api-js (already included in our dependencies)
+```bash
+pnpm install near-api-js
+```
 
 ## Data Structure
-NEAR Social stores profile data in a social graph format. The key components we'll be working with are:
+NEAR Social data is stored on the NEAR blockchain. The key components we'll be working with are:
 
 1. User Profiles
-- Located at `social.near/profile/*`
+- Contract: `social.near`
+- Data path: `{accountId}/profile/*`
 - Contains basic user information and linktree data
 
 2. Linktree Data
-- Stored at `*/profile/linktree/*`
+- Data path: `{accountId}/profile/linktree/*`
 - Contains social links (Twitter, GitHub, Telegram, etc.)
 
 ## Implementation Steps
 
-### 1. Fetching Profile Data
+### 1. Setting up NEAR Connection
 ```typescript
-// Fetch all profiles with linktree data
-const data = Social.keys("*/profile/linktree", "final");
+import { connect, keyStores, Near } from 'near-api-js';
 
-// Fetch specific social links
-const telegram = Social.keys("*/profile/linktree/telegram", "final");
-const github = Social.keys("*/profile/linktree/github", "final");
-const twitter = Social.keys("*/profile/linktree/twitter", "final");
-const website = Social.keys("*/profile/linktree/website", "final");
+// Initialize NEAR connection
+const near = await connect({
+  networkId: 'mainnet',
+  nodeUrl: 'https://rpc.mainnet.near.org',
+  keyStore: new keyStores.BrowserLocalStorageKeyStore(),
+  headers: {}
+});
+
+// Get the social contract
+const socialContract = await near.loadContract('social.near', {
+  viewMethods: ['get'],
+  changeMethods: []
+});
+```
+
+### 2. Fetching Profile Data
+```typescript
+// Function to fetch profile data
+async function fetchProfiles() {
+  try {
+    // Fetch profiles with linktree data
+    const data = await socialContract.get({
+      keys: ['*/profile/linktree']
+    });
+
+    // Fetch specific social links
+    const socialLinks = await socialContract.get({
+      keys: [
+        '*/profile/linktree/telegram',
+        '*/profile/linktree/github',
+        '*/profile/linktree/twitter',
+        '*/profile/linktree/website'
+      ]
+    });
+
+    return { data, socialLinks };
+  } catch (error) {
+    console.error('Error fetching profiles:', error);
+    throw error;
+  }
+}
 ```
 
 ### 2. Managing Profile Sets

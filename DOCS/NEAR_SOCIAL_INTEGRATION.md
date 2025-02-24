@@ -50,6 +50,10 @@ To run these examples, save them in a file (e.g., `near-social-test.js`) and exe
 
 ```bash
 node src/utils/near-social-test.js
+
+node src/utils/near-social-test.js 24 forward
+
+node src/utils/near-social-test.js 48 backward
 ```
 
 This implementation matches the successful pattern used in the Sleet Browser application's DiscoverPeople component.

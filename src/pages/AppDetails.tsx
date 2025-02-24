@@ -19,7 +19,11 @@ interface App {
 const AppDetails: React.FC = () => {
   const { slug } = useParams();
   const [app, setApp] = useState<App | null>(null);
-  const [network, setNetwork] = useState<'testnet' | 'mainnet'>('testnet');
+  const [network, setNetwork] = useState<'testnet' | 'mainnet'>('mainnet');
+
+  const toggleNetwork = () => {
+    setNetwork(network === 'testnet' ? 'mainnet' : 'testnet');
+  };
 
   useEffect(() => {
     const fetchAppDetails = async () => {
@@ -61,6 +65,20 @@ const AppDetails: React.FC = () => {
   return (
     <div className="app-details-container">
       <div className="app-details-content">
+        <div className="network-toggle">
+          <button
+            className={network === 'testnet' ? 'active' : ''}
+            onClick={toggleNetwork}
+          >
+            Testnet
+          </button>
+          <button
+            className={network === 'mainnet' ? 'active' : ''}
+            onClick={toggleNetwork}
+          >
+            Mainnet
+          </button>
+        </div>
         <img
           src={app.logo_url || 'https://via.placeholder.com/300'}
           alt={app.title}

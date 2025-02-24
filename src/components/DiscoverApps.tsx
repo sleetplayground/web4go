@@ -11,7 +11,7 @@ interface App {
 
 const DiscoverApps: React.FC = () => {
   const [apps, setApps] = useState<App[]>([]);
-  const [network, setNetwork] = useState<'testnet' | 'mainnet'>('testnet');
+  const [network, setNetwork] = useState<'testnet' | 'mainnet'>('mainnet');
   const navigate = useNavigate();
 
   useEffect(() => {

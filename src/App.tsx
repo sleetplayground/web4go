@@ -4,6 +4,7 @@ import Web4Content from './pages/Web4Content'
 import DiscoverApps from './components/DiscoverApps'
 import DiscoverPeople from './components/DiscoverPeople'
 import AppDetails from './pages/AppDetails'
+import ProfileDetails from './pages/ProfileDetails'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import { AppsProvider } from './context/AppsContext'
 
@@ -30,6 +31,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/web4/:accountId" element={<Web4Content />} />
         <Route path="/apps/:dapp_account_id" element={<AppDetails />} />
+        <Route path="/profile/:accountId" element={<ProfileDetails />} />
       </Routes>
     </AppsProvider>
   )

@@ -12,18 +12,29 @@ const nearSocialApi = new Social({
 // Fetch profiles with pagination
 async function fetchProfiles(limit = 2, direction = 'backward', fromAccountId = undefined) {
   try {
-    const response = await nearSocialApi.get({
+    // Construct the query based on direction and fromAccountId
+    const query = {
       keys: ['*/profile/**'],
       options: {
-        limit,
-        from: fromAccountId,
-        order: direction === 'forward' ? 'asc' : 'desc',
-        subscribe: false
+        limit: limit * 2, // Fetch more than needed to ensure we have enough after filtering
+        subscribe: false,
+        order: 'desc' // Always fetch in descending order for consistency
       }
-    });
+    };
+
+    // Add from parameter only if we have a fromAccountId
+    if (fromAccountId) {
+      query.options.from = `${fromAccountId}/profile/**`;
+      // When going backward, we need to exclude the current fromAccountId
+      if (direction === 'backward') {
+        query.options.from_exclusive = true;
+      }
+    }
+
+    const response = await nearSocialApi.get(query);
 
     if (response && typeof response === 'object') {
-      const profiles = Object.entries(response)
+      let profiles = Object.entries(response)
         .filter(([_, data]) => data?.profile)
         .map(([accountId, data]) => ({
           accountId,
@@ -36,14 +47,15 @@ async function fetchProfiles(limit = 2, direction = 'backward', fromAccountId = 
           linktree: data.profile.linktree || {}
         }));
 
-      // Take profiles based on the direction and limit
-      const selectedProfiles = direction === 'forward' ? 
-        profiles.slice(0, limit) : 
-        profiles.slice(-limit);
+      // Sort profiles by accountId to ensure consistent ordering
+      profiles.sort((a, b) => b.accountId.localeCompare(a.accountId));
 
-      console.log('=== Fetched Profiles ===');
-      selectedProfiles.forEach((profile) => {
-        console.log(`\nAccount: ${profile.accountId}`);
+      // Take only the requested number of profiles
+      profiles = profiles.slice(0, limit);
+
+      console.log('=== Fetched Profiles ===\n');
+      profiles.forEach((profile) => {
+        console.log(`Account: ${profile.accountId}`);
         console.log(`Name: ${profile.name}`);
         console.log(`Image URL: ${profile.image}`);
         if (profile.description) {
@@ -55,25 +67,18 @@ async function fetchProfiles(limit = 2, direction = 'backward', fromAccountId = 
             console.log(`  - ${platform}: ${url}`);
           });
         }
-        console.log('---');
+        console.log('---\n');
       });
 
-      // Navigation using cursor-based pagination
-      console.log('\nNavigation:');
-      if (selectedProfiles.length === limit) {
-        const lastProfile = selectedProfiles[selectedProfiles.length - 1];
-        const firstProfile = selectedProfiles[0];
-        
-        if (direction === 'backward') {
-          console.log('To view older profiles:');
-          console.log(`node src/utils/near-social-test.js ${limit} backward ${lastProfile.accountId}`);
-        } else {
-          console.log('To view newer profiles:');
-          console.log(`node src/utils/near-social-test.js ${limit} forward ${firstProfile.accountId}`);
-        }
+      // Navigation instructions
+      if (profiles.length === limit) {
+        console.log('Navigation:');
+        const lastProfile = profiles[profiles.length - 1];
+        console.log('To view older profiles:');
+        console.log(`node src/utils/near-social-test.js ${limit} backward ${lastProfile.accountId}\n`);
       }
 
-      return selectedProfiles;
+      return profiles;
     }
   } catch (error) {
     console.error('Error fetching profiles:', error);

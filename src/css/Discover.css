@@ -68,15 +68,26 @@
 }
 
 .apps-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  display: flex;
   gap: 2rem;
   padding: 2rem;
   width: 100%;
   max-width: 1200px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.apps-grid::-webkit-scrollbar {
+  display: none;
 }
 
 .app-card {
+  flex: 0 0 280px;
+  scroll-snap-align: start;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   padding: 1rem;
@@ -84,7 +95,6 @@
   transition: transform 0.3s ease;
   text-align: center;
 }
-
 .app-card:hover {
   transform: translateY(-5px);
 }

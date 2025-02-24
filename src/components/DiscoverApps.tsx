@@ -30,7 +30,7 @@ const DiscoverApps: React.FC = () => {
               finality: 'final',
               account_id: contractId,
               method_name: 'get_apps',
-              args_base64: btoa(JSON.stringify({ from_index: 0, limit: 10 }))
+              args_base64: btoa(JSON.stringify({ from_index: 0, limit: 100 }))
             }
           })
         });
@@ -51,7 +51,7 @@ const DiscoverApps: React.FC = () => {
 
   return (
     <section className="discover-section discover-apps">
-      <h2>Discover Apps</h2>
+      <h2>discover web4 apps</h2>
       <div className="network-toggle">
         <button
           className={network === 'testnet' ? 'active' : ''}

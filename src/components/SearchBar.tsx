@@ -67,7 +67,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 
   return (
     <section className="discover-section">
-      <h1 className="title">web4 /go</h1>
+      <h1 className="title">web4 go</h1>
       <form className="search-bar" onSubmit={handleSearch}>
         <input
           type="text"

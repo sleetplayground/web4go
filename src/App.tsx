@@ -9,7 +9,7 @@ function HomePage() {
   const navigate = useNavigate()
 
   const handleSearch = (accountId: string) => {
-    navigate(`/app/${accountId}`)
+    navigate(`/web4/${accountId}`)
   }
 
   return (
@@ -25,7 +25,7 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
-      <Route path="/app/:accountId" element={<Web4Content />} />
+      <Route path="/web4/:accountId" element={<Web4Content />} />
     </Routes>
   )
 }

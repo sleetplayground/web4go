@@ -51,6 +51,9 @@ const Web4Content = ({ onContentUrlFound }: Web4ContentProps) => {
         
         setContentUrl(gatewayUrl);
         onContentUrlFound?.(gatewayUrl);
+        
+        // Open the content in a new tab
+        window.open(gatewayUrl, '_blank');
       } catch (err) {
         setError('Failed to load content. Please try again.');
         console.error('Error fetching content:', err);
@@ -68,13 +71,10 @@ const Web4Content = ({ onContentUrlFound }: Web4ContentProps) => {
     <div className="web4-content-container">
       {!error && !contentUrl && <div className="loading-container">Loading content...</div>}
       {contentUrl && (
-        <iframe
-          src={contentUrl}
-          className="web4-iframe"
-          title="Web4 Content"
-          sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
-          allow="fullscreen"
-        />
+        <div className="redirect-message">
+          Content has been opened in a new tab. If it didn't open, 
+          <a href={contentUrl} target="_blank" rel="noopener noreferrer">click here</a>
+        </div>
       )}
     </div>
   );

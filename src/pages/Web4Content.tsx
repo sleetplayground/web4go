@@ -47,7 +47,7 @@ const Web4Content = ({ onContentUrlFound }: Web4ContentProps) => {
         const ipfsUrl = result.bodyUrl.replace('ipfs://', '');
         const gatewayUrl = `${ipfsGateway}/ipfs/${ipfsUrl}`;
         const contentResponse = await fetch(gatewayUrl);
-        if (!response.ok) throw new Error('Failed to fetch content');
+        if (!contentResponse.ok) throw new Error('Failed to fetch content');
         
         setContentUrl(gatewayUrl);
         onContentUrlFound?.(gatewayUrl);

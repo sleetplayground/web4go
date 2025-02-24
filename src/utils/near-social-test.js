@@ -32,7 +32,7 @@ async function testFetchProfiles(blockHeight, direction) {
     const response = await nearSocialApi.get({
       keys: ['*/profile/**'],
       options: {
-        limit: 2, // Limit to 2 profiles
+        limit: 2,
         blockHeight: blockHeight,
         order: direction === 'backward' ? 'asc' : 'desc',
         subscribe: false,
@@ -42,9 +42,9 @@ async function testFetchProfiles(blockHeight, direction) {
     });
 
     // Format and display profiles
-    const profiles = Object.entries(response || {}).map(([accountId, data]) => 
-      formatProfile(accountId, data)
-    );
+    const profiles = Object.entries(response || {})
+      .slice(0, 2) // Ensure we only process 2 profiles
+      .map(([accountId, data]) => formatProfile(accountId, data));
 
     // Find the next block height for pagination
     const nextBlockHeight = profiles.length > 0 ?
@@ -55,8 +55,10 @@ async function testFetchProfiles(blockHeight, direction) {
 
     console.log('\n=== NEAR Social Profiles ===');
     console.log(`Direction: ${direction} | Block Height: ${blockHeight || 'Latest'}\n`);
+    console.log(`Total Profiles: ${profiles.length}\n`);
 
-    profiles.forEach(profile => {
+    profiles.forEach((profile, index) => {
+      console.log(`Profile #${index + 1}:`);
       console.log(`Account: ${profile.accountId}`);
       console.log(`Name: ${profile.name}`);
       if (profile.description) console.log(`Description: ${profile.description}`);
@@ -66,15 +68,15 @@ async function testFetchProfiles(blockHeight, direction) {
           console.log(`  - ${platform}: ${link}`);
         });
       }
-      console.log('---');
+      console.log('---\n');
     });
 
     // Provide hint for next query
     if (profiles.length > 0) {
-      console.log('\nTo fetch next profiles, run:');
+      console.log('To fetch next profiles, run:');
       console.log(`node near-social-test.js ${nextBlockHeight} ${direction}\n`);
     } else {
-      console.log('\nNo more profiles to fetch.\n');
+      console.log('No more profiles to fetch.\n');
     }
   } catch (error) {
     console.error('Error fetching profiles:', error);

@@ -15,9 +15,9 @@ async function fetchProfiles(limit = 2, direction = 'backward', fromAccountId = 
     const response = await nearSocialApi.get({
       keys: ['*/profile/**'],
       options: {
-        limit: 100, // Fetch more to ensure we get valid profiles
+        limit,
         from: fromAccountId,
-        order: 'desc', // Always fetch in descending order for consistency
+        order: direction === 'forward' ? 'asc' : 'desc',
         subscribe: false
       }
     });
@@ -37,7 +37,9 @@ async function fetchProfiles(limit = 2, direction = 'backward', fromAccountId = 
         }));
 
       // Take profiles based on the direction and limit
-      const selectedProfiles = profiles.slice(0, limit);
+      const selectedProfiles = direction === 'forward' ? 
+        profiles.slice(0, limit) : 
+        profiles.slice(-limit);
 
       console.log('=== Fetched Profiles ===');
       selectedProfiles.forEach((profile) => {
@@ -60,12 +62,15 @@ async function fetchProfiles(limit = 2, direction = 'backward', fromAccountId = 
       console.log('\nNavigation:');
       if (selectedProfiles.length === limit) {
         const lastProfile = selectedProfiles[selectedProfiles.length - 1];
-        console.log('To view older profiles:');
-        console.log(`node src/utils/near-social-test.js 2 backward ${lastProfile.accountId}`);
-      }
-      if (fromAccountId) {
-        console.log('To view newer profiles:');
-        console.log('node src/utils/near-social-test.js 2 forward');
+        const firstProfile = selectedProfiles[0];
+        
+        if (direction === 'backward') {
+          console.log('To view older profiles:');
+          console.log(`node src/utils/near-social-test.js ${limit} backward ${lastProfile.accountId}`);
+        } else {
+          console.log('To view newer profiles:');
+          console.log(`node src/utils/near-social-test.js ${limit} forward ${firstProfile.accountId}`);
+        }
       }
 
       return selectedProfiles;
@@ -77,7 +82,7 @@ async function fetchProfiles(limit = 2, direction = 'backward', fromAccountId = 
 
 // Parse command line arguments
 const args = process.argv.slice(2);
-const limit = 2; // Fixed limit to 2
+const limit = parseInt(args[0]) || 2;
 const direction = args[1] || 'backward';
 const fromAccountId = args[2] || undefined;
 

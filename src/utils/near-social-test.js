@@ -16,7 +16,7 @@ async function fetchProfiles(limit = 2, direction = 'backward', fromAccountId = 
     const query = {
       keys: ['*/profile/**'],
       options: {
-        limit: limit * 2, // Fetch more than needed to ensure we have enough after filtering
+        limit: limit,
         subscribe: false,
         order: 'desc' // Always fetch in descending order for consistency
       }
@@ -25,33 +25,33 @@ async function fetchProfiles(limit = 2, direction = 'backward', fromAccountId = 
     // Add from parameter only if we have a fromAccountId
     if (fromAccountId) {
       query.options.from = `${fromAccountId}/profile/**`;
-      // When going backward, we need to exclude the current fromAccountId
-      if (direction === 'backward') {
-        query.options.from_exclusive = true;
-      }
+      query.options.from_exclusive = true; // Always exclude the current fromAccountId
     }
 
     const response = await nearSocialApi.get(query);
 
     if (response && typeof response === 'object') {
+      // Filter and map profiles
       let profiles = Object.entries(response)
-        .filter(([_, data]) => data?.profile)
+        .filter(([_, data]) => {
+          // Only include profiles with valid data
+          return data?.profile && 
+                 (data.profile.name || data.profile.image?.url || 
+                  data.profile.description || Object.keys(data.profile.linktree || {}).length > 0);
+        })
         .map(([accountId, data]) => ({
           accountId,
           name: data.profile.name || accountId,
           image: data.profile.image?.url || 'https://via.placeholder.com/150',
-          description: data.profile.description ? 
-            data.profile.description.length > 500 ? 
-              `${data.profile.description.substring(0, 500)}...` : 
-              data.profile.description : undefined,
+          description: data.profile.description,
           linktree: data.profile.linktree || {}
         }));
 
-      // Sort profiles by accountId to ensure consistent ordering
-      profiles.sort((a, b) => b.accountId.localeCompare(a.accountId));
-
-      // Take only the requested number of profiles
-      profiles = profiles.slice(0, limit);
+      // Sort profiles by accountId for consistent ordering
+      profiles.sort((a, b) => direction === 'forward' ? 
+        a.accountId.localeCompare(b.accountId) : 
+        b.accountId.localeCompare(a.accountId)
+      );
 
       console.log('=== Fetched Profiles ===\n');
       profiles.forEach((profile) => {
@@ -63,19 +63,21 @@ async function fetchProfiles(limit = 2, direction = 'backward', fromAccountId = 
         }
         if (Object.keys(profile.linktree).length > 0) {
           console.log('Links:');
-          Object.entries(profile.linktree).forEach(([platform, url]) => {
-            console.log(`  - ${platform}: ${url}`);
+          Object.entries(profile.linktree).forEach(([platform, value]) => {
+            console.log(`  - ${platform}: ${value}`);
           });
         }
         console.log('---\n');
       });
 
       // Navigation instructions
-      if (profiles.length === limit) {
+      if (profiles.length > 0) {
         console.log('Navigation:');
         const lastProfile = profiles[profiles.length - 1];
         console.log('To view older profiles:');
         console.log(`node src/utils/near-social-test.js ${limit} backward ${lastProfile.accountId}\n`);
+      } else {
+        console.log('No more profiles available.\n');
       }
 
       return profiles;

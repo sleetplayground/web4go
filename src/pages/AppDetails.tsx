@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { useApps } from '../context/AppsContext';
 import type { App } from '../context/AppsContext';
 import '../css/AppDetails.css';
@@ -39,9 +39,10 @@ const AppDetails: React.FC = () => {
           />
           <h1 className="app-details-title">{app.title}</h1>
           <p className="app-details-oneliner">{app.oneliner}</p>
-          <div className="app-details-description">
-            {app.description}
-          </div>
+          <div 
+            className="app-details-description"
+            dangerouslySetInnerHTML={{ __html: app.description }}
+          />
           <div className="app-details-links">
             <a
               href={`https://${dapp_account_id?.split('.')[0]}.${network === 'testnet' ? 'testnet.page' : 'near.page'}`}

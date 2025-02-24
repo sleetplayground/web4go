@@ -11,7 +11,7 @@ const nearSocialApi = new Social({
 
 // Parse command line arguments
 const args = process.argv.slice(2);
-const blockHeight = parseInt(args[0]) || null;
+const blockHeight = args[0] ? parseInt(args[0]) : null;
 const direction = args[1] || 'forward';
 
 // Format profile data for display
@@ -27,13 +27,13 @@ function formatProfile(accountId, data) {
 }
 
 // Test function to fetch multiple profiles with pagination
-async function testFetchProfiles(blockHeight, direction) {
+async function testFetchProfiles(fromBlockHeight, direction) {
   try {
     const response = await nearSocialApi.get({
       keys: ['*/profile/**'],
       options: {
         limit: 2,
-        blockHeight: blockHeight,
+        from: fromBlockHeight,
         order: direction === 'backward' ? 'asc' : 'desc',
         subscribe: false,
         return_deleted: false,
@@ -41,26 +41,36 @@ async function testFetchProfiles(blockHeight, direction) {
       }
     });
 
+    if (!response || Object.keys(response).length === 0) {
+      console.log('No profiles found for the given criteria.');
+      return;
+    }
+
     // Format and display profiles
-    const profiles = Object.entries(response || {})
-      .slice(0, 2) // Ensure we only process 2 profiles
-      .map(([accountId, data]) => formatProfile(accountId, data));
+    const profiles = Object.entries(response)
+      .map(([accountId, data]) => formatProfile(accountId, data))
+      .filter(profile => profile.blockHeight !== undefined);
+
+    if (profiles.length === 0) {
+      console.log('No valid profiles found with block heights.');
+      return;
+    }
 
     // Find the next block height for pagination
-    const nextBlockHeight = profiles.length > 0 ?
-      (direction === 'backward' ?
-        Math.min(...profiles.map(p => p.blockHeight)) :
-        Math.max(...profiles.map(p => p.blockHeight))) :
-      blockHeight;
+    const blockHeights = profiles.map(p => p.blockHeight).filter(h => !isNaN(h));
+    const nextBlockHeight = direction === 'backward' ?
+      Math.min(...blockHeights) :
+      Math.max(...blockHeights);
 
     console.log('\n=== NEAR Social Profiles ===');
-    console.log(`Direction: ${direction} | Block Height: ${blockHeight || 'Latest'}\n`);
+    console.log(`Direction: ${direction} | From Block Height: ${fromBlockHeight || 'Latest'}\n`);
     console.log(`Total Profiles: ${profiles.length}\n`);
 
     profiles.forEach((profile, index) => {
       console.log(`Profile #${index + 1}:`);
       console.log(`Account: ${profile.accountId}`);
       console.log(`Name: ${profile.name}`);
+      console.log(`Block Height: ${profile.blockHeight}`);
       if (profile.description) console.log(`Description: ${profile.description}`);
       if (Object.keys(profile.links).length > 0) {
         console.log('Links:');
@@ -72,14 +82,13 @@ async function testFetchProfiles(blockHeight, direction) {
     });
 
     // Provide hint for next query
-    if (profiles.length > 0) {
+    if (profiles.length > 0 && nextBlockHeight) {
+      const nextBlock = direction === 'backward' ? nextBlockHeight - 1 : nextBlockHeight + 1;
       console.log('To fetch next profiles, run:');
-      console.log(`node near-social-test.js ${nextBlockHeight} ${direction}\n`);
-    } else {
-      console.log('No more profiles to fetch.\n');
+      console.log(`node near-social-test.js ${nextBlock} ${direction}\n`);
     }
   } catch (error) {
-    console.error('Error fetching profiles:', error);
+    console.error('Error fetching profiles:', error.message);
   }
 }
 
@@ -94,5 +103,5 @@ if (args.length === 0) {
   console.log('\nExamples:');
   console.log('  node near-social-test.js              # Latest profiles');
   console.log('  node near-social-test.js 123456789    # Profiles from specific block');
-  console.log('  node near-social-test.js 123456789 backward');
+  console.log('  node near-social-test.js 123456789 backward\n');
 }

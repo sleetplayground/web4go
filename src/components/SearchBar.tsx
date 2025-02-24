@@ -73,7 +73,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
           type="text"
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
-          placeholder="enter .near account...(works for subaccounts!"
+          placeholder="enter .near account...(works for subaccounts!)"
           className="search-input"
         />
         <button type="submit" className="search-button" disabled={isLoading}>

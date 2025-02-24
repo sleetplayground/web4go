@@ -6,13 +6,16 @@ this is a demo project to Browse content on web4
 
 
 What is the reason for this tool?
+<br/>
 if you know the near account you can just type it in to a broswer and add .page to the end. the issue is that this only works for master accounts. this tool is so you can browse content on web4 from subaccounts.
 
 What is web4?
+<br/>
 Web4 is the future of the web using ipfs and near. leanr more at web4.near.page
 
 
 Will this tool become obsolete?
+<br/>
 My curent main goal is to allow users to get to web4 site that are deploye to subaccount. There may be an esier fix in the future. But I also want this be a site to discover apps and people on web4.
 
 

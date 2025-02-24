@@ -45,7 +45,8 @@ async function fetchProfiles(limit = 2, direction = 'backward', fromAccountId = 
           image: data.profile.image?.url || 'https://via.placeholder.com/150',
           description: data.profile.description,
           linktree: data.profile.linktree || {}
-        }));
+        }))
+        .slice(0, limit); // Enforce the profile limit
 
       // Sort profiles by accountId for consistent ordering
       profiles.sort((a, b) => direction === 'forward' ? 

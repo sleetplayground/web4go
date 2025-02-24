@@ -3,19 +3,6 @@ import { useParams } from 'react-router-dom';
 import { useApps } from '../context/AppsContext';
 import '../css/AppDetails.css';
 
-interface App {
-  logo_url: string;
-  title: string;
-  oneliner: string;
-  description: string;
-  dapp_account_id: string;
-  github?: string;
-  twitter?: string;
-  discord?: string;
-  telegram?: string;
-  medium?: string;
-}
-
 const AppDetails: React.FC = () => {
   const { dapp_account_id } = useParams();
   const [app, setApp] = useState<App | null>(null);
@@ -24,7 +11,8 @@ const AppDetails: React.FC = () => {
   const apps = network === 'testnet' ? testnetApps : mainnetApps;
 
   useEffect(() => {
-    const foundApp = apps.find((app: App) => app.dapp_account_id === dapp_account_id);
+    if (!dapp_account_id) return;
+    const foundApp = apps.find(app => app.dapp_account_id === dapp_account_id);
     if (foundApp) {
       setApp(foundApp);
     } else {

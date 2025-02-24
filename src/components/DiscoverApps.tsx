@@ -3,13 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { useApps } from '../context/AppsContext';
 import '../css/Discover.css';
 
-interface App {
-  logo_url: string;
-  title: string;
-  slug: string;
-  dapp_account_id: string;
-}
-
 const DiscoverApps: React.FC = () => {
   const [network, setNetwork] = useState<'testnet' | 'mainnet'>('mainnet');
   const navigate = useNavigate();

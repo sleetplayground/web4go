@@ -84,7 +84,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
         </button>
         {error && <div className="error-message">{error}</div>}
       </form>
-      <div className="home-message">your gateway to web4</div>
+      <div className="home-message">/ your gateway to web4</div>
     </section>
   );
 };

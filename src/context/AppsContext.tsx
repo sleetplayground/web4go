@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-interface App {
+export interface App {
   title: string;
   dapp_account_id: string;
   categories: number[];

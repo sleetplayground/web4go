@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { NearSocialApi } from '@builddao/near-social-js';
 import '../css/Discover.css';
 
 interface Profile {
@@ -10,6 +11,12 @@ interface Profile {
   };
 }
 
+const nearSocialApi = new NearSocialApi({
+  networkId: 'mainnet',
+  nodeUrl: 'https://rpc.mainnet.near.org',
+  contractName: 'social.near'
+});
+
 const DiscoverPeople: React.FC = () => {
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -18,14 +25,26 @@ const DiscoverPeople: React.FC = () => {
   useEffect(() => {
     const fetchProfiles = async () => {
       try {
-        // TODO: Implement actual profile fetching using NEAR Social contract
-        // This is a placeholder for now
-        const mockProfiles = [
-          { accountId: 'alice.near', name: 'Alice', image: { url: 'https://via.placeholder.com/150' } },
-          { accountId: 'bob.near', name: 'Bob', image: { url: 'https://via.placeholder.com/150' } },
-          { accountId: 'charlie.near', name: 'Charlie', image: { url: 'https://via.placeholder.com/150' } },
+        // Fetch some initial NEAR accounts to display
+        const initialAccounts = [
+          'petarvujovic.near',
+          'mob.near',
+          'zavodil.near',
+          'root.near',
+          'nearweek.near',
+          'mintbase.near'
         ];
-        setProfiles(mockProfiles);
+
+        const fetchedProfiles = await nearSocialApi.getProfiles(initialAccounts);
+        const formattedProfiles = Object.entries(fetchedProfiles).map(([accountId, data]) => ({
+          accountId,
+          name: data?.name || accountId,
+          image: {
+            url: data?.image?.url || 'https://via.placeholder.com/150'
+          }
+        }));
+
+        setProfiles(formattedProfiles);
       } catch (error) {
         console.error('Error fetching profiles:', error);
       } finally {
@@ -40,13 +59,22 @@ const DiscoverPeople: React.FC = () => {
     navigate(`/profile/${accountId}`);
   };
 
+  if (loading) {
+    return (
+      <section className="discover-section discover-people">
+        <h2>discover people</h2>
+        <div>Loading profiles...</div>
+      </section>
+    );
+  }
+
   return (
     <section className="discover-section discover-people">
       <h2>discover people</h2>
       <div className="apps-grid">
         {profiles.map((profile, index) => (
           <div
-            key={index}
+            key={profile.accountId}
             className="app-card"
             onClick={() => handleProfileClick(profile.accountId)}
           >

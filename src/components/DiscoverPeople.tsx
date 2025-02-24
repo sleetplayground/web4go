@@ -11,17 +11,8 @@ interface Profile {
   };
 }
 
-interface ProfileData {
-  name?: string;
-  image?: {
-    url?: string;
-  };
-}
-
 const nearSocialApi = new Social({
-  network: 'mainnet',
-  nodeUrl: 'https://rpc.mainnet.near.org',
-  contractName: 'social.near'
+  network: 'mainnet'
 });
 
 const DiscoverPeople: React.FC = () => {

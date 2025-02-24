@@ -1,4 +1,4 @@
-const { Social } = require('@builddao/near-social-js');
+import { Social } from '@builddao/near-social-js';
 
 // Initialize the API with proper configuration
 const nearSocialApi = new Social({

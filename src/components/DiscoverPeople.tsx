@@ -9,6 +9,7 @@ interface Profile {
   image?: {
     url?: string;
   };
+  tags?: string[];
 }
 
 const nearSocialApi = new Social({
@@ -24,26 +25,8 @@ const DiscoverPeople: React.FC = () => {
   const navigate = useNavigate();
   const observer = useRef<IntersectionObserver>();
   const loadingRef = useRef<HTMLDivElement>(null);
-  const profileCache = useRef<Record<string, Profile>>({});
 
-  const BATCH_SIZE = 6;
-  const allAccounts = [
-    'petarvujovic.near',
-    'mob.near',
-    'zavodil.near',
-    'root.near',
-    'nearweek.near',
-    'mintbase.near',
-    'calebjacob.near',
-    'james.near',
-    'microchipgnu.near',
-    'ndcplug.near',
-    'eugenethedream.near',
-    'markeljan.near',
-    'shemar.near',
-    'sarahkornfeld.near',
-    'jlw.near'
-  ];
+  const BATCH_SIZE = 12;
 
   const loadMoreProfiles = useCallback(async () => {
     if (loading) return;
@@ -52,53 +35,58 @@ const DiscoverPeople: React.FC = () => {
     setError(null);
     try {
       const start = page * BATCH_SIZE;
-      const end = start + BATCH_SIZE;
-      const currentBatch = allAccounts.slice(start, end);
 
-      if (currentBatch.length === 0) {
+      // Fetch profiles that have a name field set
+      const response = await nearSocialApi.keys({
+        order: 'desc',
+        limit: BATCH_SIZE,
+        from: start,
+        subscribe: false,
+        where: {
+          key: 'profile',
+          value: { $exists: true }
+        }
+      });
+
+      if (!response || response.length === 0) {
         setHasMore(false);
         return;
       }
 
-      // Filter out cached profiles
-      const uncachedAccounts = currentBatch.filter(
-        account => !profileCache.current[account]
-      );
+      // Get unique account IDs
+      const accountIds = [...new Set(response.map(item => item.accountId))];
 
-      if (uncachedAccounts.length > 0) {
-        const fetchedProfiles = await nearSocialApi.get({
-          keys: uncachedAccounts.map(account => `${account}/profile/*`)
+      // Fetch profile data for these accounts
+      const profileData = await nearSocialApi.get({
+        keys: accountIds.map(id => `${id}/profile/*`)
+      });
+
+      const newProfiles = accountIds.map(accountId => {
+        const data = profileData[accountId]?.profile;
+        return {
+          accountId,
+          name: data?.name || accountId,
+          image: {
+            url: data?.image?.url || 'https://via.placeholder.com/150'
+          },
+          tags: data?.tags || []
+        };
+      });
+
+      setProfiles(prev => {
+        const uniqueProfiles = [...prev];
+        newProfiles.forEach(profile => {
+          const existingIndex = uniqueProfiles.findIndex(p => p.accountId === profile.accountId);
+          if (existingIndex === -1) {
+            uniqueProfiles.push(profile);
+          }
         });
-
-        const formattedProfiles = Object.entries(fetchedProfiles || {}).map(
-          ([accountId, data]: [string, any]) => ({
-            accountId,
-            name: data?.profile?.name || accountId,
-            image: {
-              url: data?.profile?.image?.url || 'https://via.placeholder.com/150'
-            }
-          })
-        );
-
-        // Update cache
-        formattedProfiles.forEach(profile => {
-          profileCache.current[profile.accountId] = profile;
-        });
-      }
-
-      // Combine cached and new profiles
-      const batchProfiles = currentBatch.map(
-        account => profileCache.current[account] || {
-          accountId: account,
-          name: account,
-          image: { url: 'https://via.placeholder.com/150' }
-        }
-      );
-
-      setProfiles(prev => [...prev, ...batchProfiles]);
+        return uniqueProfiles;
+      });
       setPage(prev => prev + 1);
     } catch (error) {
       console.error('Error fetching profiles:', error);
+      setError('Failed to load profiles');
     } finally {
       setLoading(false);
     }
@@ -139,9 +127,9 @@ const DiscoverPeople: React.FC = () => {
     <section className="discover-section discover-people">
       <h2>discover people</h2>
       <div className="apps-grid">
-        {profiles.map((profile) => (
+        {profiles.map((profile, index) => (
           <div
-            key={profile.accountId}
+            key={`${profile.accountId}-${index}`}
             className="app-card"
             onClick={() => handleProfileClick(profile.accountId)}
           >

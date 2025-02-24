@@ -14,7 +14,9 @@ interface Profile {
 
 const nearSocialApi = new Social({
   network: 'mainnet',
-  contractName: 'social.near'
+  contractName: 'social.near',
+  nodeUrl: 'https://rpc.mainnet.near.org',
+  apiUrl: 'https://api.near.social/api/v1'
 });
 
 const DiscoverPeople: React.FC = () => {

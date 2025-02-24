@@ -39,6 +39,13 @@ const AppDetails: React.FC = () => {
           {app.description}
         </div>
         <div className="app-details-links">
+          <a
+            href={`https://${dapp_account_id?.split('.')[0]}.${network === 'testnet' ? 'testnet.page' : 'near.page'}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Web4 Page
+          </a>
           {app.github && (
             <a href={`https://github.com/${app.github}`} target="_blank" rel="noopener noreferrer">
               GitHub

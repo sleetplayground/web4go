@@ -53,3 +53,12 @@ node near-social-test.js
 ```
 
 This implementation matches the successful pattern used in the Sleet Browser application's DiscoverPeople component.
+
+
+
+---
+
+one person profile
+```sh
+node -e "const { Social } = require('@builddao/near-social-js'); const api = new Social({ network: 'mainnet' }); api.get({ keys: ['petarvujovic.near/profile/**', 'petarvujovic.near/profile/linktree/**'] }).then(data => console.log(JSON.stringify(data, null, 2))).catch(console.error)"
+```

@@ -13,7 +13,8 @@ interface Profile {
 }
 
 const nearSocialApi = new Social({
-  network: 'mainnet'
+  network: 'mainnet',
+  contractName: 'social.near'
 });
 
 const DiscoverPeople: React.FC = () => {
@@ -36,42 +37,44 @@ const DiscoverPeople: React.FC = () => {
     try {
       const start = page * BATCH_SIZE;
 
-      // Fetch profiles that have a name field set
-      const response = await nearSocialApi.keys({
-        order: 'desc',
-        limit: BATCH_SIZE,
-        from: start,
-        subscribe: false,
-        where: {
-          key: 'profile',
-          value: { $exists: true }
-        }
-      });
+      // Fetch profiles with proper error handling
+      let response;
+      try {
+        response = await nearSocialApi.get({
+          keys: [`*/profile/**`],
+          options: {
+            limit: BATCH_SIZE,
+            order: 'desc',
+            from: start,
+            subscribe: false
+          }
+        });
+      } catch (apiError) {
+        console.error('API Error:', apiError);
+        throw new Error('Failed to fetch profiles from NEAR Social API');
+      }
 
-      if (!response || response.length === 0) {
+      if (!response || typeof response !== 'object') {
         setHasMore(false);
         return;
       }
 
-      // Get unique account IDs
-      const accountIds = [...new Set(response.map(item => item.accountId))];
-
-      // Fetch profile data for these accounts
-      const profileData = await nearSocialApi.get({
-        keys: accountIds.map(id => `${id}/profile/*`)
-      });
-
-      const newProfiles = accountIds.map(accountId => {
-        const data = profileData[accountId]?.profile;
-        return {
+      // Transform response into profiles
+      const newProfiles = Object.entries(response)
+        .filter(([accountId, data]: [string, any]) => data?.profile)
+        .map(([accountId, data]: [string, any]) => ({
           accountId,
-          name: data?.name || accountId,
+          name: data.profile.name || accountId,
           image: {
-            url: data?.image?.url || 'https://via.placeholder.com/150'
+            url: data.profile.image?.url || 'https://via.placeholder.com/150'
           },
-          tags: data?.tags || []
-        };
-      });
+          tags: Array.isArray(data.profile.tags) ? data.profile.tags : []
+        }));
+
+      if (newProfiles.length === 0) {
+        setHasMore(false);
+        return;
+      }
 
       setProfiles(prev => {
         const uniqueProfiles = [...prev];
@@ -86,7 +89,8 @@ const DiscoverPeople: React.FC = () => {
       setPage(prev => prev + 1);
     } catch (error) {
       console.error('Error fetching profiles:', error);
-      setError('Failed to load profiles');
+      setError(error instanceof Error ? error.message : 'Failed to load profiles');
+      setHasMore(false);
     } finally {
       setLoading(false);
     }

@@ -1,24 +1,20 @@
 # WEB4GO
+web4 browser
+
 
 this is a demo project to Browse content on web4
 
 
-**what is web4 and what is this browser?**
-<br/>
-web4 is an experiment by a few near hackers, it stores webapp data on ipfs and saves the ipfs address to your near account.
-they currently have near.page domain and have somehow set it up so that every near account can have a subdomain of that.
-so yourname.near can have yourname.near.page.
-this works great and all but there are some limitains with web2 and web4.
-while you can technically deploy a web4 website to any near account or sub account, it would be a procces to set up new subdomains for near.page so that you could depoy a website to example.whynot.yourname.near.page
+What is the reason for this tool?
+if you know the near account you can just type it in to a broswer and add .page to the end. the issue is that this only works for master accounts. this tool is so you can browse content on web4 from subaccounts.
 
-that is where my sleet broswer demo project comes in as a way to browse and veiw web4 content that is depoyed to users subaccounts.
-now anyone can have sleetbrowser.testnet.page/subaccount.yourname.near
-using react router, this can be built into any react app to enable users to have pages on your domain
+What is web4?
+Web4 is the future of the web using ipfs and near. leanr more at web4.near.page
 
-**what other uses?**
-this is also a demo project to show how web4 pages can be connected and previewed in a single app or interface.
 
-this app uses react routing and near api js.
+Will this tool become obsolete?
+My curent main goal is to allow users to get to web4 site that are deploye to subaccount. There may be an esier fix in the future. But I also want this be a site to discover apps and people on web4.
+
 
 ----
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useApps } from '../context/AppsContext';
+import type { App } from '../context/AppsContext';
 import '../css/AppDetails.css';
 
 const AppDetails: React.FC = () => {

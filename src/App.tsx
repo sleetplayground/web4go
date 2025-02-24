@@ -29,7 +29,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/web4/:accountId" element={<Web4Content />} />
-        <Route path="/apps/:slug" element={<AppDetails />} />
+        <Route path="/apps/:dapp_account_id" element={<AppDetails />} />
       </Routes>
     </AppsProvider>
   )

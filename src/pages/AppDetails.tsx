@@ -37,14 +37,21 @@ const AppDetails: React.FC = () => {
               request_type: 'call_function',
               finality: 'final',
               account_id: contractId,
-              method_name: 'get_app_by_account_id',
-              args_base64: btoa(JSON.stringify({ dapp_account_id }))
+              method_name: 'get_apps',
+              args_base64: btoa(JSON.stringify({ from_index: 0, limit: 100 }))
             }
           })
         });
         const data = await response.json();
         const result = JSON.parse(Buffer.from(data.result.result).toString());
-        setApp(result);
+        const apps = result.map((app: [number, App]) => app[1]);
+        const foundApp = apps.find((app: App) => app.dapp_account_id === dapp_account_id);
+        
+        if (foundApp) {
+          setApp(foundApp);
+        } else {
+          console.error('App not found');
+        }
       } catch (error) {
         console.error('Error fetching app details:', error);
       }

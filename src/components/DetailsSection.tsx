@@ -10,6 +10,7 @@ const DetailsSection: React.FC = () => {
           <p>
             If you know the NEAR account, you can just type it in to a browser and add .page to the end.
             However, this only works for master accounts. This tool enables browsing content on Web4 from subaccounts.
+            For example, you can access content from subaccounts like key.sleet.near using this tool.
           </p>
         </div>
 

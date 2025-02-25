@@ -11,7 +11,7 @@ if you know the near account you can just type it in to a broswer and add .page 
 
 What is web4?
 <br/>
-Web4 is the future of the web using ipfs and near. leanr more at web4.near.page
+Web4 is the future of the web using ipfs and near. leanr more at web4.near.page, you can submit apps at awesomeweb4.near.page
 
 
 Will this tool become obsolete?
@@ -37,3 +37,8 @@ Public RPC endpoints
 web 4 min contract
 <br/>
 https://github.com/vgrichina/web4-min-contract
+
+
+---
+
+copyright 2025 by sleet.near

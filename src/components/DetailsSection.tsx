@@ -6,6 +6,17 @@ const DetailsSection: React.FC = () => {
     <section className="details-section">
       <div className="details-content">
         <div className="details-card">
+          <h3>How does this app work?</h3>
+          <p>
+            This app helps you browse Web4 content on NEAR blockchain in two ways:
+            For master accounts (like example.near), it redirects to example.near.page.
+            For subaccounts (like sub.example.near), it fetches the content directly
+            through IPFS and displays it in your browser. You can also discover and
+            explore other Web4 apps through our app directory.
+          </p>
+        </div>
+
+        <div className="details-card">
           <h3>What is the reason for this tool?</h3>
           <p>
             If you know the NEAR account, you can just type it in to a browser and add .page to the end.

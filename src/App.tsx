@@ -2,6 +2,7 @@ import './css/App.css'
 import SearchBar from './components/SearchBar'
 import Web4Content from './pages/Web4Content'
 import DiscoverApps from './components/DiscoverApps'
+import DetailsSection from './components/DetailsSection'
 import AppDetails from './pages/AppDetails'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import { AppsProvider } from './context/AppsContext'
@@ -17,6 +18,7 @@ function HomePage() {
     <div className="app-container">
       <SearchBar onSearch={handleSearch} />
       <DiscoverApps />
+      <DetailsSection />
     </div>
   )
 }

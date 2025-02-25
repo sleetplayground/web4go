@@ -19,8 +19,8 @@ echo $NEAR_ENV
 
 deploy
 ```sh
-npx web4-deploy web_playground web4go.testnet --nearfs
-npx web4-deploy web_playground web4go.near --nearfs
+npx web4-deploy dist web4go.testnet --nearfs
+npx web4-deploy dist web4go.near --nearfs
 ```
 - can be run with or without --nearfs
 
@@ -28,7 +28,7 @@ npx web4-deploy web_playground web4go.near --nearfs
 
 also locally with ipfs
 ```sh
-ipfs add -r web_playground
+ipfs add -r dist
 ```
 
 

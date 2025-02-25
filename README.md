@@ -1,9 +1,21 @@
 # WEB4GO
 web4 browser
 
+This is a demo project to browse content on web4.
 
-this is a demo project to Browse content on web4
+## How This App Works
+The web4 browser provides a seamless way to access web4 content across both master accounts and subaccounts on the NEAR blockchain:
 
+1. **Master Accounts**: For master accounts (e.g., example.near), the app automatically redirects to the standard .page domain (example.near.page).
+
+2. **Subaccounts**: For subaccounts (e.g., sub.example.near), the app:
+   - Queries the web4_get endpoint to retrieve the IPFS hash
+   - Resolves the content through IPFS gateways
+   - Displays the content directly in your browser
+
+3. **Gateway Integration**: The app intelligently handles both mainnet and testnet content using appropriate IPFS gateways:
+   - Mainnet: ipfs.web4.near.page
+   - Testnet: ipfs.web4.testnet.page
 
 What is the reason for this tool?
 <br/>

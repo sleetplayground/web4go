@@ -36,15 +36,6 @@
   background-color: #C9A8F4;
 }
 
-.discover-people {
-  background-color: #FFF8A3;
-}
-
-.discover-people h2,
-.discover-people .discover-content {
-  color: #313638;
-}
-
 .network-toggle {
   margin-bottom: 2rem;
   display: flex;

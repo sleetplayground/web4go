@@ -45,7 +45,7 @@ const AppDetails: React.FC = () => {
           />
           <div className="app-details-links">
             <a
-              href={`https://${dapp_account_id?.split('.')[0]}.${network === 'testnet' ? 'testnet.page' : 'near.page'}`}
+              href={`https://${dapp_account_id?.replace('web4.', '')}.page`}
               target="_blank"
               rel="noopener noreferrer"
             >

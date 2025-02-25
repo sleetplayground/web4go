@@ -1,0 +1,63 @@
+.details-section {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Ubuntu', sans-serif;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  flex-shrink: 0;
+  position: relative;
+  background-color: #ffffff;
+  padding: 4rem 2rem;
+}
+
+.details-content {
+  max-width: 800px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.details-card {
+  background-color: rgba(140, 162, 245, 0.1);
+  border-radius: 16px;
+  padding: 2rem;
+  transition: transform 0.3s ease;
+}
+
+.details-card:hover {
+  transform: translateY(-5px);
+}
+
+.details-card h3 {
+  color: #8CA2F5;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.details-card p {
+  color: #313638;
+  line-height: 1.6;
+  font-size: 1.1rem;
+}
+
+.details-card a {
+  color: #C9A8F4;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.details-card a:hover {
+  color: #95D58D;
+}
+
+.copyright {
+  margin-top: 4rem;
+  text-align: center;
+  color: #8CA2F5;
+  font-size: 0.9rem;
+}

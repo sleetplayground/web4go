@@ -3,6 +3,26 @@ web4 browser
 
 This is a demo project to browse content on web4.
 
+---
+
+### Dev and Build
+
+```sh
+bun install
+bun run start
+bun run dev
+bun run build
+bun run clean
+
+# web4 deploy
+NEAR_SIGNER_KEY=ed25519:your_key_here
+bun run web4_testnet
+bun run web4_mainnet
+```
+
+---
+
+
 ## How This App Works
 The web4 browser provides a seamless way to access web4 content across both master accounts and subaccounts on the NEAR blockchain:
 

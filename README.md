@@ -9,10 +9,9 @@ This is a demo project to browse content on web4.
 
 ```sh
 bun install
-bun run start
 bun run dev
 bun run build
-bun run clean
+bun run lint
 
 # web4 deploy
 NEAR_SIGNER_KEY=ed25519:your_key_here
